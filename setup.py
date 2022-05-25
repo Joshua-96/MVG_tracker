@@ -32,6 +32,7 @@ def main():
         name="mvg_tracker",
         packages=find_packages(),
         author="Joshua Ziegler",
+        version=get_version(),
         description="script for getting departures and delays of\
         all public transportation within munich",
         install_requires=get_install_requires(),
