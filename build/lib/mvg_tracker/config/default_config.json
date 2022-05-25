@@ -1,0 +1,29 @@
+{
+    "dbParams": {
+        "host"      : "172.24.2.1",
+        "user"      : "docker",
+        "password"  : "docker",
+        "port"      : 5432,
+        "database"  : "docker"
+        },
+    "assistFiles":{
+                    "stationFile":"LUTs/BahnhofsDaten.csv",
+                    "destFile":"LUTs/Zielzuordnung.csv",
+                    "transFile":"LUTs/Umstiegsbahnhoefe.csv"
+                },
+    "replaceMap":{
+        "ÃŸ":"ß",
+        "Ã¶":"ö",
+        "Ã¼":"ü",
+        ", ":"_",
+        " " :"_",
+        "(Obb)":"",
+        "/":"",
+        "-":"_",
+        "Bf.":"Bf",
+        "(Oberbay)":"",	
+        "München_Flughafen_Terminal": "Flughafen_München",
+        "München_Trudering":"Trudering",
+        "Buchenau_":"Buchenau"
+    }
+}

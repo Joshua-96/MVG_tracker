@@ -1,6 +1,5 @@
 from importlib_metadata import entry_points
-from setuptools import setup,\
-    find_packages
+from setuptools import setup, find_packages
 import re
 import pathlib as pl
 
@@ -37,7 +36,7 @@ def main():
         all public transportation within munich",
         install_requires=get_install_requires(),
         url="https://github.com/Joshua-96/MVG_tracker",
-        package_data={"mvg_tracker" : ["LUTs/*", "config/*"]}
+        package_data={"" : ["LUTs/*", "config/*"]},
         entry_points={
             "console_scripts": ["mvg_tracker=__main__:main"]
         }
