@@ -1,0 +1,7 @@
+numpy
+pandas
+pathlib
+asyncio
+aiohttp
+sqlalchemy
+psycopg2-binary
