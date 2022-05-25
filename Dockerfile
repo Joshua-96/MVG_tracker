@@ -8,6 +8,7 @@ RUN \
   apt-get install -qq -y \
     python3 \
     python3-pip\
+    git\
     iputils-ping
 
 # RUN mkdir /root/workdir
@@ -15,6 +16,7 @@ RUN \
 # COPY LUTs /root/workdir/LUTs
 # COPY mvg_tracker/MVG_config.json /root/workdir
 # COPY mvg_tracker/data_gathering.py /root/workdir
-RUN python3 -m pip install 
+RUN python3 -m pip install importlib_metadata
+RUN python3 -m pip install git+https://github.com/Joshua-96/MVG_tracker.git
 # RUN python3 -m pip install -r /root/workdir/requirements.txt
 # RUN python3 data_gathering.py

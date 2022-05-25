@@ -15,7 +15,7 @@ if __name__ == "__main__":
         datefmt='%H:%M:%S',
         level=logging.ERROR)
 
-    jsonRelPath = "MVG_config.json"
+    jsonRelPath = "/config/defaultconfig.json"
     jsonPath = os.path.join(currPath, jsonRelPath)
     config = get_json_from_path(jsonPath)
     data_manager = DataManager(config, "MVG1", "MVG_Trans1", currPath)

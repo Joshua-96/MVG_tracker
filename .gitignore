@@ -1,3 +1,10 @@
-/2022-05-24.csv
 /postgres-data
 /traceback.log
+mvg_tracker.egg-info/dependency_links.txt
+mvg_tracker.egg-info/entry_points.txt
+mvg_tracker.egg-info/PKG-INFO
+mvg_tracker.egg-info/requires.txt
+mvg_tracker.egg-info/SOURCES.txt
+mvg_tracker.egg-info/top_level.txt
+mvg_tracker/__pycache__/__main__.cpython-39.pyc
+mvg_tracker/traceback.log
