@@ -13,7 +13,7 @@ RUN \
 RUN mkdir /root/workdir
 COPY requirements.txt /root/workdir
 COPY LUTs /root/workdir/LUTs
-COPY MVG_config.json /root/workdir
-COPY data_gathering.py /root/workdir
+COPY mvg_tracker/MVG_config.json /root/workdir
+COPY mvg_tracker/data_gathering.py /root/workdir
 RUN python3 -m pip install -r /root/workdir/requirements.txt
 # RUN python3 data_gathering.py

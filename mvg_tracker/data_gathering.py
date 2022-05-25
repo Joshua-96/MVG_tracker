@@ -14,7 +14,8 @@ from dataclasses import dataclass,asdict,fields
 from pandas.core import base
 from pandas.core.algorithms import mode
 from pandas.io.formats.format import return_docstring
-from sqlalchemy import create_engine
+import psycopg2
+import sqlalchemy as sa
 import numpy as np
 
 #from apscheduler.schedulers.background import BackgroundScheduler
@@ -199,8 +200,15 @@ class DataManager:
         return pd.read_sql_table(self.depTableName,conn)
 
     def get_connector(self):
-        # alchemyEngine = create_engine("postgresql://postgres:postgrespw@localhost:49154",pool_recycle=3600) 
-        alchemyEngine   = create_engine(f'postgresql://{self.dbParams["user"]}:{self.dbParams["password"]}@{self.dbParams["host"]}:{self.dbParams["port"]}/{self.dbParams["database"]}', pool_recycle=3600,)
+        # alchemyEngine = sa.create_engine("postgresql://postgres:postgrespw@localhost:49154",pool_recycle=3600) 
+        # try localhost if the configured ip doesn't work
+        try:
+            alchemyEngine   = sa.create_engine(f'postgresql://{self.dbParams["user"]}:{self.dbParams["password"]}@{self.dbParams["host"]}:{self.dbParams["port"]}/{self.dbParams["database"]}', pool_recycle=3600,)
+            alchemyEngine.connect()
+        except sa.exc.OperationalError:
+            print("fallback to localhost")
+            alchemyEngine   = sa.create_engine(f'postgresql://{self.dbParams["user"]}:{self.dbParams["password"]}@localhost:{self.dbParams["port"]}/{self.dbParams["database"]}', pool_recycle=3600,)
+            alchemyEngine.connect()
         return alchemyEngine.connect()
 
     def create_db_table(self,Df,tableName):
@@ -222,7 +230,7 @@ class DataManager:
         baseTransDf.to_sql(self.transTableName,conn,if_exists="append",index=False)
         baseDf.to_sql(self.depTableName,conn,if_exists="append",index=False)
 
-    async def main(self):
+    async def main(self, config):
         if config is None:
             raise  ValueError("No Config given")
 
@@ -318,18 +326,3 @@ def get_json_from_path(Path):
     
     return params
 
-
-if __name__=="__main__":
-    currPath = pl.Path(sys.argv[0]).parent
-    logging.basicConfig(filename=os.path.join(currPath,"traceback.log"),
-                            filemode='a',
-                            format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-                            datefmt='%H:%M:%S',
-                            level=logging.ERROR)
-    
-    jsonRelPath = "MVG_config.json"
-    jsonPath = os.path.join(currPath,jsonRelPath)
-    config = get_json_from_path(jsonPath)
-    data_manager = DataManager(config,"MVG1","MVG_Trans1",currPath)
-    #logging.basicConfig(filename="tracebackss.log",encoding="utf-8")
-    asyncio.run(data_manager.main())

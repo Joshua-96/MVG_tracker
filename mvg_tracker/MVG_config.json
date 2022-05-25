@@ -7,9 +7,9 @@
         "database"  : "docker"
         },
     "assistFiles":{
-                    "stationFile":"LUTs/BahnhofsDaten.csv",
-                    "destFile":"LUTs/Zielzuordnung.csv",
-                    "transFile":"LUTs/Umstiegsbahnhoefe.csv"
+                    "stationFile":"mvg_tracker/LUTs/BahnhofsDaten.csv",
+                    "destFile":"mvg_tracker/LUTs/Zielzuordnung.csv",
+                    "transFile":"mvg_tracker/LUTs/Umstiegsbahnhoefe.csv"
                 },
     "replaceMap":{
         "ÃŸ":"ß",
