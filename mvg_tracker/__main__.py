@@ -14,6 +14,7 @@ def main():
         datefmt='%H:%M:%S',
         level=logging.ERROR)
 
+    print("staring")
     jsonRelPath = "config/default_config.json"
     jsonPath = os.path.join(currPath, jsonRelPath)
     config = get_json_from_path(jsonPath)

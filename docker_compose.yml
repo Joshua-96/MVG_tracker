@@ -2,7 +2,7 @@ version: '3.9'
 services:
   database:
     restart: always
-    image: joshuaziegler/postgres_db:1.0.0
+    image: postgres
     environment:
       - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=docker
@@ -17,10 +17,11 @@ services:
       - ./postgres-data:/var/lib/postgresql/data
   data_grabber: 
     restart: always
-    image: joshuaziegler/mvg_tracker:0.1.0
+    image: joshuaziegler/mvg_tracker:0.1.2
     volumes:
       - .:/mnt/external:rw
-    command: python3 /root/workdir/data_gathering.py
+      - $HOME/Desktop/MVG_logs:/mnt/logging:w
+    command: python3 /usr/local/lib/python3.8/dist-packages/mvg_tracker/__main__.py
     networks:
       appnet:
         ipv4_address: 172.24.2.2

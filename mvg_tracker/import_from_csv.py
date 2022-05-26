@@ -5,7 +5,6 @@ import os
 from data_gathering import get_json_from_path
 from sqlalchemy import create_engine
 
-
 def main():
     currPath = pl.Path(__file__).parent
     CSV_PATH = pl.Path(sys.argv[1])
