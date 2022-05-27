@@ -253,8 +253,9 @@ class DataManager:
                                           inplace=True)
 
     def loadDf(self):
-        conn = self.get_connector()
-        return pd.read_sql_table(self.depTableName, conn)
+        if self.db_connector is None:
+            self.get_connector()
+        return pd.read_sql_table(self.depTableName, self.db_connector)
 
     def get_connector(self):
         srv = "postgresql"
@@ -277,8 +278,9 @@ class DataManager:
         self.db_connector = alchemyEngine.connect()
 
     def create_db_table(self, Df, tableName):
-        conn = self.get_connector()
-        Df.to_sql(tableName, conn, if_exists="append", index=False)
+        if self.db_connector is None:
+            self.get_connector()
+        Df.to_sql(tableName, self.db_connector, if_exists="append", index=False)
 
     def update_db_table(self, Df):
         if self.db_connector is None:
