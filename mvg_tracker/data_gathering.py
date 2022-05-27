@@ -4,18 +4,19 @@ from numpy import int64
 import pandas as pd
 import json
 import pathlib as pl
-from datetime import datetime
 import asyncio
 import aiohttp
 import sys
 import logging
 import os
 from dataclasses import dataclass, fields
-import psycopg2
 import sqlalchemy as sa
+from utils import init_console_logger, init_file_logger
 
-#from apscheduler.schedulers.background import BackgroundScheduler
+# from apscheduler.schedulers.background import BackgroundScheduler
 
+logger = logging.getLogger("RequestHandeler")
+logger = init_console_logger(logger)
 
 @dataclass
 class departure:
@@ -32,7 +33,7 @@ class departure:
 async def get_json(client, url):
     async with client.get(url) as response:
         if response.status != 200:
-            print(response.status)
+            logger.info(f"got bad response from server{response.status}")
             raise aiohttp.ServerConnectionError
         # assert response.status == 200
         return await response.read()
@@ -101,7 +102,7 @@ class Logger:
         self.FileType = FileType
         self.LogLevel = LogLevel
 
-    def log_errors(self, ErrorType: str, station="", line=""):
+    def error(self, ErrorType: str, station="", line=""):
         dateStr = datetime.today().strftime('%Y-%m-%d')
         FilePath = self.path.joinpath(dateStr).with_suffix(f".{self.FileType}")
         timeOfDay = datetime.today().strftime('%H:%M:%S')
@@ -122,7 +123,7 @@ class Logger:
 
 class DataManager:
 
-    def __init__(self, config, depTableName, transTableName, currPath):
+    def __init__(self, config, depTableName, transTableName, loggingDir):
         self.dbParams = config["dbParams"]
         self.replaceMap = config["replaceMap"]
         self.assistFiles = config["assistFiles"]
@@ -130,8 +131,13 @@ class DataManager:
         self.transTableName = transTableName
         self.refreshInterval = 30
         self.saveInterval = 960
-        self.currPath = currPath
-        self.Logger = Logger(self.currPath, "csv")
+        self.db_connector = None
+        self.cwd = str(pl.Path(__file__).parent)
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
+        self.logger = init_console_logger(self.logger, logging.DEBUG)
+        self.logger = init_file_logger(self.logger, loggingDir, logging.INFO)
+        # self.logger = Logger(self.loggingDir, "csv")
         self.timeOffset = 2*60*3600
         self.load_trans_config()
 
@@ -170,9 +176,11 @@ class DataManager:
                             [depDf, cur_depDf], ignore_index=True)
 
                 except KeyError:
-                    self.Logger.log_errors(
-                        ErrorType="KeyError",
-                        station=station, line=dep["label"])
+                    self.logger.warning(
+                        f'KeyError: {station} not found in with line {dep["label"]}')
+                    # self.logger.error(
+                    #     ErrorType="KeyError",
+                    #     station=station, line=dep["label"])
                     continue
         return depDf
 
@@ -233,7 +241,7 @@ class DataManager:
     def load_trans_config(self):
         self.FileDict = {i: None for i in self.assistFiles}
         for name in self.assistFiles:
-            loadPath = os.path.join(self.currPath, self.assistFiles[name])
+            loadPath = os.path.join(self.cwd, self.assistFiles[name])
             self.FileDict[name] = pd.read_csv(
                 loadPath,
                 sep=";",
@@ -261,41 +269,47 @@ class DataManager:
                 pool_recycle=3600,)
             alchemyEngine.connect()
         except sa.exc.OperationalError:
-            print("fallback to localhost")
+            self.logger.warning("fallback to localhost")
             alchemyEngine = sa.create_engine(
                 f'{srv}://{user}:{pw}@localhost:{port}/{db}',
                 pool_recycle=3600,)
             alchemyEngine.connect()
-        return alchemyEngine.connect()
+        self.db_connector = alchemyEngine.connect()
 
     def create_db_table(self, Df, tableName):
         conn = self.get_connector()
         Df.to_sql(tableName, conn, if_exists="append", index=False)
 
     def update_db_table(self, Df):
-        conn = self.get_connector()
+        if self.db_connector is None:
+            self.get_connector()
         time_thresh = time.time()-self.timeOffset
         baseDf = pd.read_sql(
             f'SELECT * FROM public."{self.depTableName}" WHERE timestamp_epoch >= {time_thresh}',
-            conn)
-        conn.execute(
+            self.db_connector)
+        self.db_connector.execute(
             f'DELETE FROM public."{self.depTableName}" WHERE timestamp_epoch >= {time_thresh}')
         baseDf = pd.concat([baseDf, Df], ignore_index=True)
         baseDf.drop_duplicates("Id", inplace=True, keep="last")
         transTable = self.calculate_transfer(baseDf)
         baseTransDf = pd.read_sql(
             f'SELECT * FROM public."{self.transTableName}" WHERE timestamp_epoch >= {time_thresh}',
-            conn)
+            self.db_connector)
         baseTransDf = pd.concat([baseTransDf, transTable], ignore_index=True)
         baseTransDf.drop_duplicates(
             ["timestamp_from", "station", "line_from", "line_to"],
             ignore_index=True,
             inplace=True)
-        conn.execute(
+        self.db_connector.execute(
             f'DELETE FROM public."{self.transTableName}" WHERE timestamp_epoch >= {time_thresh}')
-        baseTransDf.to_sql(self.transTableName, conn,
-                           if_exists="append", index=False)
-        baseDf.to_sql(self.depTableName, conn, if_exists="append", index=False)
+        baseTransDf.to_sql(self.transTableName,
+                           self.db_connector,
+                           if_exists="append",
+                           index=False)
+        baseDf.to_sql(self.depTableName,
+                      self.db_connector,
+                      if_exists="append",
+                      index=False)
 
     async def main(self, config):
         if config is None:
@@ -326,19 +340,19 @@ class DataManager:
                     )
                 )
 
-                sys.stdout.write(f"working {epochTime_Df - epoch_now} \r")
+                self.logger.debug(f"active connection with upcomming departure in {epochTime_Df - epoch_now + 30} seconds, next refresh in {self.refreshInterval} seconds")
+                # sys.stdout.write(f"working {epochTime_Df - epoch_now} \r")
 
                 if epochTime_Df > (epoch_now + 60):                        
                     time2wait = (epochTime_Df - epoch_now) - 30
                     time.sleep(time2wait)
-                    print(f"sleepmode, waiting for {time2wait} seconds")
+                    self.logger.info(f"sleepmode, waiting for {time2wait} seconds")
                 
                 time.sleep(self.refreshInterval)
 
-                sys.stdout.flush()
-
                 if epoch_now % self.saveInterval < self.refreshInterval+2:
-                    print("_________________saving______________________")
+                    #print("_________________saving______________________")
+                    self.logger.info(f"saving snapshot of Departures to database, saving again in {self.saveInterval // 60} minutes")
                     self.update_db_table(cumDf)
                     cumDf = cumDf[0:0]
                     time.sleep(30)
@@ -346,35 +360,35 @@ class DataManager:
             except aiohttp.ServerConnectionError:
                 print("ResponseError")
                 logging.exception("ResponseError")
-                self.Logger.log_errors("ResponseError")
+                self.logger.error("ResponseError")
                 self.update_db_table(cumDf)
                 cumDf = cumDf[0:0]
                 time.sleep(1)
                 continue
 
             except AssertionError:
-                print("___________________AssertionError________________")
-                self.Logger.log_errors("AssertionError")
+                #print("___________________AssertionError________________")
+                self.logger.error("AssertionError")
                 logging.exception("AssertionError")
                 self.update_db_table(cumDf)
                 cumDf = cumDf[0:0]
                 time.sleep(120)
                 continue
             except aiohttp.ClientConnectionError:
-                print("______________InternetConnectionError___________")
-                self.Logger.log_errors("InternetConnectionError")
+                #print("______________InternetConnectionError___________")
+                self.logger.error("InternetConnectionError")
                 self.update_db_table(cumDf)
                 cumDf = cumDf[0:0]
                 time.sleep(120)
                 continue
             except KeyboardInterrupt:
-                print("____________break_________________")
-                self.Logger.log_errors("KeyboardInterrupt")
+                #print("____________break_________________")
+                self.logger.error("KeyboardInterrupt")
                 self.update_db_table(cumDf)
                 sys.exit(0)
             except IndexError:
-                print("___________________PayloadEmtyError________________")
-                self.Logger.log_errors("PayloadError")
+                #print("___________________PayloadEmtyError________________")
+                self.logger.error("PayloadError")
                 time.sleep(30)
                 continue
             # except:
@@ -384,14 +398,13 @@ class DataManager:
             #     sys.exit(1)
 
 
-def get_json_from_path(Path):
-    pl_Path = pl.Path(Path)
+def get_json_from_path(Path:pl.Path):
 
-    assert pl_Path.suffix == ".json", \
-        f"Incorrect Filetype given: {pl_Path.suffix} expected json"
+    assert Path.suffix == ".json", \
+        f"Incorrect Filetype given: {Path.suffix} expected json"
 
-    if os.path.isfile(Path):
-        with open(pl_Path, "r") as read_file:
+    if Path.exists():
+        with open(Path, "r") as read_file:
             params = json.load(read_file)
     else:
         raise FileNotFoundError(f"at path {Path}")

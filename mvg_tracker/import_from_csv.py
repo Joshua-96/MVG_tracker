@@ -1,9 +1,9 @@
 import pandas as pd
 import pathlib as pl
 import sys
-import os
 from data_gathering import get_json_from_path
 from sqlalchemy import create_engine
+
 
 def main():
     currPath = pl.Path(__file__).parent
@@ -22,7 +22,5 @@ def main():
     df.to_sql(CSV_PATH.stem, conn, if_exists="append", index=False)
 
 
-
 if __name__ == "__main__":
-
     main()

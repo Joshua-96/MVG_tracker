@@ -1,26 +1,65 @@
+import argparse
 import logging
 import os
+import sys
 import asyncio
 import pathlib as pl
-from data_gathering import DataManager, get_json_from_path,\
-    get_json_from_path
+from data_gathering import DataManager, get_json_from_path
+from utils import init_console_logger, init_file_logger
+
 
 def main():
     currPath = pl.Path(__file__).parent
-    logging.basicConfig(
-        filename=os.path.join(currPath, "traceback.log"),
-        filemode='a',
-        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-        datefmt='%H:%M:%S',
-        level=logging.ERROR)
+    # logging.basicConfig(
+    #     filename=os.path.join(currPath, "traceback.log"),
+    #     filemode='a',
+    #     format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+    #     datefmt='%H:%M:%S',
+    #     level=logging.ERROR)
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--log_dir",
+        "-l",
+        type=str,
+        dest="logDir",
+        help="enter Dir for logging",
+        default="."
+    )
+    parser.add_argument(
+        "--config_path",
+        "-c",
+        type=str,
+        dest="configPath",
+        help="enter filePath for the config file to use",
+        default=None
+    )
+    
+    args = parser.parse_args()
 
-    print("staring")
-    jsonRelPath = "config/default_config.json"
-    jsonPath = os.path.join(currPath, jsonRelPath)
-    config = get_json_from_path(jsonPath)
+    logger = logging.getLogger(__name__)
+    logger = init_console_logger(logger)
+    logger.setLevel(logging.INFO)
+
+    if args.logDir != ".":
+        logDir = pl.Path(args.logDir) 
+        if not logDir.exists():
+            raise FileNotFoundError("Dir doesn't exist, please enter valid Path")
+    else:
+        logger.warning("No logging dir given fallback to cwd")
+        logDir = currPath
+    if args.configPath is None:
+        logger.warning("No config dir given fallback to default config")
+        configRelPath = pl.Path("config/default_config.json")
+        configPath = currPath.joinpath(configRelPath)
+    else:
+        configPath = pl.Path(args.configPath)
+    logger = init_file_logger(logger, str(logDir))
+    logger.info(f"start tracking, writing logs to {logDir}, getting config from {configPath}")
+    config = get_json_from_path(configPath)
     data_manager = DataManager(config, "MVG1", "MVG_Trans1", currPath)
-    #logging.basicConfig(filename="tracebackss.log",encoding="utf-8")
+    # logging.basicConfig(filename="tracebackss.log",encoding="utf-8")
     asyncio.run(data_manager.main(config=config))
+
 
 if __name__ == "__main__":
     main()
