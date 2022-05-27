@@ -56,7 +56,7 @@ def main():
     logger = init_file_logger(logger, str(logDir))
     logger.info(f"start tracking, writing logs to {logDir}, getting config from {configPath}")
     config = get_json_from_path(configPath)
-    data_manager = DataManager(config, "MVG1", "MVG_Trans1", currPath)
+    data_manager = DataManager(config, "MVG1", "MVG_Trans1", logDir)
     # logging.basicConfig(filename="tracebackss.log",encoding="utf-8")
     asyncio.run(data_manager.main(config=config))
 
