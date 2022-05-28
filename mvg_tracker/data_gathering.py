@@ -342,7 +342,7 @@ class DataManager:
                     )
                 )
 
-                self.logger.debug(f"active connection with upcomming departure in {epochTime_Df - epoch_now + 30} seconds, next refresh in {self.refreshInterval} seconds")
+                self.logger.info(f"active connection with upcomming departure in {epochTime_Df - epoch_now + 30} seconds, next refresh in {self.refreshInterval} seconds")
                 # sys.stdout.write(f"working {epochTime_Df - epoch_now} \r")
 
                 if epochTime_Df > (epoch_now + 60):                        
@@ -361,7 +361,6 @@ class DataManager:
 
             except aiohttp.ServerConnectionError:
                 print("ResponseError")
-                logging.exception("ResponseError")
                 self.logger.error("ResponseError")
                 self.update_db_table(cumDf)
                 cumDf = cumDf[0:0]
@@ -371,7 +370,6 @@ class DataManager:
             except AssertionError:
                 #print("___________________AssertionError________________")
                 self.logger.error("AssertionError")
-                logging.exception("AssertionError")
                 self.update_db_table(cumDf)
                 cumDf = cumDf[0:0]
                 time.sleep(120)
@@ -395,7 +393,6 @@ class DataManager:
                 continue
             # except:
             #     print("other exception occured")
-            #     logging.exception("something else")
             #     self.update_db_table(cumDf)
             #     sys.exit(1)
 
