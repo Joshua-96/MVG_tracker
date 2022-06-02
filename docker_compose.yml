@@ -13,15 +13,16 @@ services:
     networks:
       appnet:
         ipv4_address: 172.24.2.1
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+    # volumes:
+    #   - ./postgres-data:/var/lib/postgresql/data
   data_grabber: 
     restart: always
-    image: joshuaziegler/mvg_tracker:0.1.2
+    image: joshuaziegler/mvg_tracker:0.2.0
     volumes:
-      - .:/mnt/external:rw
-      - $HOME/Desktop/MVG_logs:/mnt/logging:w
-    command: python3 /usr/local/lib/python3.8/dist-packages/mvg_tracker/__main__.py
+      # - C:/Users/joshu/OneDrive/Desktop/logging:/mnt/external
+      - ~/Desktop/logging:/mnt/external/logs
+      - ~/AppData/Roaming/MVG_Tracker/daily:/mnt/external/daily
+    command: python3 /usr/local/lib/python3.8/dist-packages/mvg_tracker/__main__.py -l /mnt/external/logs -b /mnt/external/daily
     networks:
       appnet:
         ipv4_address: 172.24.2.2

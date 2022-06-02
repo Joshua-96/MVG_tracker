@@ -33,12 +33,28 @@ def main():
         help="enter filePath for the config file to use",
         default=None
     )
-    
-    args = parser.parse_args()
+    parser.add_argument(
+        "--back_up",
+        "-b",
+        type=str,
+        dest="backUpPath",
+        help="enter Dir for the backed up files",
+        default=None
+    )
 
+    args = parser.parse_args()
     logger = logging.getLogger(__name__)
     logger = init_console_logger(logger)
     logger.setLevel(logging.INFO)
+
+    if args.backUpPath is None:
+        backUpFolder = pl.Path(
+            os.path.expanduser("~")).joinpath(
+                "AppData/Roaming/MVG_Tracker/daily")
+        logger.warning(
+            f"No backup Dir given saving to and loading from {backUpFolder}")
+    else:
+        backUpFolder=args.backUpPath
 
     if args.logDir != ".":
         logDir = pl.Path(args.logDir) 
@@ -56,7 +72,11 @@ def main():
     logger = init_file_logger(logger, str(logDir))
     logger.info(f"start tracking, writing logs to {logDir}, getting config from {configPath}")
     config = get_json_from_path(configPath)
-    data_manager = DataManager(config, "MVG1", "MVG_Trans1", logDir)
+    data_manager = DataManager(config,
+                               "MVG1",
+                               "MVG_Trans1",
+                               logDir,
+                               backUpFolder)
     # logging.basicConfig(filename="tracebackss.log",encoding="utf-8")
     asyncio.run(data_manager.main(config=config))
 

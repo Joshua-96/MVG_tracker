@@ -1,3 +1,4 @@
+import signal
 import time
 from datetime import datetime
 from numpy import int64
@@ -18,9 +19,17 @@ from utils import init_console_logger, init_file_logger
 logger = logging.getLogger("RequestHandeler")
 logger = init_console_logger(logger)
 
+COL_ORDER = ["timestamp",
+             "station",
+             "line",
+             "destination",
+             "delay",
+             "Id",
+             "curr_time_epoch",
+             "timestamp_epoch"]
+
 @dataclass
 class departure:
-    timestamp_epoch: int
     timestamp: datetime
     station: str
     line: str
@@ -28,7 +37,7 @@ class departure:
     delay: int
     Id: str
     curr_time_epoch: int64
-
+    timestamp_epoch: int
 
 async def get_json(client, url):
     async with client.get(url) as response:
@@ -53,10 +62,10 @@ async def cache_dep(stationID, client):
     return cachedDep
 
 
-def signal_handler(signal, frame):
-    loop.stop()
-    client.close()
-    sys.exit(0)
+    
+    # loop.stop()
+    # client.close()
+    # sys.exit(0)
 
 
 def show_psycopg2_exception(err):
@@ -123,14 +132,16 @@ class Logger:
 
 class DataManager:
 
-    def __init__(self, config, depTableName, transTableName, loggingDir):
+    def __init__(self, config, depTableName, transTableName, loggingDir, backUpFolder):
         self.dbParams = config["dbParams"]
         self.replaceMap = config["replaceMap"]
         self.assistFiles = config["assistFiles"]
         self.depTableName = depTableName
         self.transTableName = transTableName
+        self.backUpFolder = pl.Path(backUpFolder)
         self.refreshInterval = 30
         self.saveInterval = 960
+        self.backUpInterval = 39600
         self.db_connector = None
         self.cwd = str(pl.Path(__file__).parent)
         self.logger = logging.getLogger(__name__)
@@ -140,6 +151,7 @@ class DataManager:
         # self.logger = Logger(self.loggingDir, "csv")
         self.timeOffset = 2*60*3600
         self.load_trans_config()
+        self.last_saved = datetime.today().date()
 
     def init_stationID(self):
         df = self.FileDict["stationFile"][["station", "ID"]]
@@ -160,7 +172,6 @@ class DataManager:
                         timestamp_epoch = int(
                             dep["departureTime"]/1000) + int(dep["delay"]*60)
                         cur_dep = departure(
-                            timestamp_epoch=timestamp_epoch,
                             timestamp=datetime.fromtimestamp(
                                 timestamp=timestamp_epoch).strftime("%Y/%m/%d, %H:%M:%S"),
                             station=station,
@@ -169,7 +180,8 @@ class DataManager:
                             delay=dep["delay"],
                             Id=dep["departureId"],
                             curr_time_epoch=int(
-                                datetime.timestamp(datetime.now()))
+                                datetime.timestamp(datetime.now())),
+                            timestamp_epoch=timestamp_epoch
                         )
                         cur_depDf = pd.DataFrame(data=[cur_dep])
                         depDf = pd.concat(
@@ -257,6 +269,32 @@ class DataManager:
             self.get_connector()
         return pd.read_sql_table(self.depTableName, self.db_connector)
 
+    def save_df_datewise(self):
+        for table, folder in [[self.transTableName, "trans"], [self.depTableName, "dep"]]:
+            df = pd.read_sql(
+                f'SELECT * FROM public."{table}"',
+                self.db_connector)
+            if "timestamp" in df.columns:
+                timestampCol = "timestamp"
+            elif "timestamp_from" in df.columns:
+                timestampCol = "timestamp_from"
+            else:
+                raise KeyError(f"no timestamp col found in {df.columns}")
+            df[timestampCol] = pd.to_datetime(df[timestampCol])
+            df["date"] = df[timestampCol].apply(lambda x: x.date(), 0)
+            for unique_date in df.date.unique():
+                dateStr = unique_date.strftime('%Y-%m-%d')
+                FilePath = self.backUpFolder.joinpath(folder, dateStr).with_suffix(f".csv")
+                FilePath.parent.mkdir(parents=True, exist_ok=True)
+                df_date = df.loc[df["date"] == unique_date]
+                df_date.drop("date", axis=1, inplace=True)
+                if FilePath.exists():
+                    incoming_df = pd.read_csv(FilePath, sep=",")
+                    df_date = pd.concat([df_date, incoming_df], ignore_index=True)
+                    del incoming_df
+                    df_date.drop_duplicates()
+                df_date.to_csv(str(FilePath), sep=",", index=False, mode="w")
+
     def get_connector(self):
         srv = "postgresql"
         user = self.dbParams["user"]
@@ -282,7 +320,7 @@ class DataManager:
             self.get_connector()
         Df.to_sql(tableName, self.db_connector, if_exists="append", index=False)
 
-    def update_db_table(self, Df):
+    def update_db_table(self):
         if self.db_connector is None:
             self.get_connector()
         time_thresh = time.time()-self.timeOffset
@@ -291,7 +329,7 @@ class DataManager:
             self.db_connector)
         self.db_connector.execute(
             f'DELETE FROM public."{self.depTableName}" WHERE timestamp_epoch >= {time_thresh}')
-        baseDf = pd.concat([baseDf, Df], ignore_index=True)
+        baseDf = pd.concat([baseDf, self.cumDf], ignore_index=True)
         baseDf.drop_duplicates("Id", inplace=True, keep="last")
         transTable = self.calculate_transfer(baseDf)
         baseTransDf = pd.read_sql(
@@ -313,6 +351,15 @@ class DataManager:
                       if_exists="append",
                       index=False)
 
+    def signal_handler(self, signal, frame):
+        self.update_db_table()
+        self.save_df_datewise()
+        self.logger.info("Saving data to backup-dir and shutting down")
+        sys.exit(0)
+
+    def clean_up_proc(self):
+        self.update_db_table()
+
     async def main(self, config):
         if config is None:
             raise ValueError("No Config given")
@@ -321,18 +368,25 @@ class DataManager:
         client = aiohttp.ClientSession(loop=loop)
 
         cachedDep = await cache_dep(self.stationID, client)
-        cumDf = self.get_Df(cachedDep, self.stationID)
-        self.create_db_table(cumDf, self.depTableName)
-        transDf = self.calculate_transfer(cumDf)
+        self.cumDf = self.get_Df(cachedDep, self.stationID)
+        self.create_db_table(self.cumDf, self.depTableName)
+        transDf = self.calculate_transfer(self.cumDf)
         self.create_db_table(transDf, self.transTableName)
+        signal.signal(signal.SIGTERM, self.signal_handler)
+        signal.signal(signal.SIGINT, self.signal_handler)
 
         while True:
             try:
+                #if self.last_saved != datetime.today().date():
                 epoch_now = int(datetime.timestamp(datetime.now()))
                 cachedDep = await cache_dep(self.stationID, client)
                 currDf = self.get_Df(cachedDep, self.stationID)
-                cumDf = pd.concat([cumDf, currDf])
-                cumDf = cumDf.drop_duplicates("Id", keep="last")
+                self.cumDf = pd.concat([self.cumDf, currDf])
+                self.cumDf = self.cumDf.drop_duplicates("Id", keep="last")
+                if epoch_now % self.backUpInterval < self.refreshInterval + 2:
+                    self.save_df_datewise()
+                    self.logger.info("executing planned db backup")
+                    self.last_saved = datetime.today().date()
 
                 epochTime_Df = int(
                     datetime.timestamp(
@@ -353,41 +407,32 @@ class DataManager:
                 time.sleep(self.refreshInterval)
 
                 if epoch_now % self.saveInterval < self.refreshInterval+2:
-                    #print("_________________saving______________________")
                     self.logger.info(f"saving snapshot of Departures to database, saving again in {self.saveInterval // 60} minutes")
-                    self.update_db_table(cumDf)
-                    cumDf = cumDf[0:0]
+                    self.update_db_table()
+                    self.cumDf = self.cumDf[0:0]
                     time.sleep(30)
 
             except aiohttp.ServerConnectionError:
                 print("ResponseError")
                 self.logger.error("ResponseError")
-                self.update_db_table(cumDf)
-                cumDf = cumDf[0:0]
+                self.update_db_table()
+                self.cumDf = self.cumDf[0:0]
                 time.sleep(1)
                 continue
 
             except AssertionError:
-                #print("___________________AssertionError________________")
                 self.logger.error("AssertionError")
-                self.update_db_table(cumDf)
-                cumDf = cumDf[0:0]
+                self.update_db_table()
+                self.cumDf = self.cumDf[0:0]
                 time.sleep(120)
                 continue
             except aiohttp.ClientConnectionError:
-                #print("______________InternetConnectionError___________")
                 self.logger.error("InternetConnectionError")
-                self.update_db_table(cumDf)
-                cumDf = cumDf[0:0]
+                self.update_db_table()
+                self.cumDf = self.cumDf[0:0]
                 time.sleep(120)
                 continue
-            except KeyboardInterrupt:
-                #print("____________break_________________")
-                self.logger.error("KeyboardInterrupt")
-                self.update_db_table(cumDf)
-                sys.exit(0)
             except IndexError:
-                #print("___________________PayloadEmtyError________________")
                 self.logger.error("PayloadError")
                 time.sleep(30)
                 continue
@@ -395,6 +440,7 @@ class DataManager:
             #     print("other exception occured")
             #     self.update_db_table(cumDf)
             #     sys.exit(1)
+
 
 
 def get_json_from_path(Path:pl.Path):
