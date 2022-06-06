@@ -21,10 +21,10 @@ Ostbahnhof,west,einwaerts
 Ostbahnhof,ost,auswaerts
 Aying,west,einwaerts
 Aying,ost,auswaerts
-Höhenkirchen_Siegertsbrunn,west,einwaerts
-Höhenkirchen_Siegertsbrunn,ost,auswaerts
-Kreuzstraße,west,einwaerts
-Kreuzstraße,ost,auswaerts
+Hoehenkirchen_Siegertsbrunn,west,einwaerts
+Hoehenkirchen_Siegertsbrunn,ost,auswaerts
+Kreuzstrasse,west,einwaerts
+Kreuzstrasse,ost,auswaerts
 Erding,west,einwaerts
 Erding,ost,auswaerts
 Holzkirchen,west,einwaerts
@@ -53,8 +53,8 @@ Dachau_Bahnhof,west,auswaerts
 Dachau_Bahnhof,ost,einwaerts
 Germering_Unterpfaffenhofen,west,auswaerts
 Germering_Unterpfaffenhofen,ost,einwaerts
-Weßling,west,auswaerts
-Weßling,ost,einwaerts
+Wessling,west,auswaerts
+Wessling,ost,einwaerts
 Maisach,west,auswaerts
 Maisach,ost,einwaerts
 Altomuenster,west,auswaerts
@@ -69,8 +69,8 @@ Buchenau,west,auswaerts
 Buchenau,ost,einwaerts
 Grafrath,west,auswaerts
 Grafrath,ost,einwaerts
-Höllriegelskreuth,west,auswaerts
-Höllriegelskreuth,ost,einwaerts
+Hoellriegelskreuth,west,auswaerts
+Hoellriegelskreuth,ost,einwaerts
 Wolfratshausen,west,auswaerts
 Wolfratshausen,ost,einwaerts
 Petershausen,west,auswaerts
