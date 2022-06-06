@@ -1,10 +1,10 @@
 {
     "dbParams": {
-        "host"      : "172.24.2.1",
-        "user"      : "docker",
-        "password"  : "docker",
+        "host"      : "192.168.2.119",
+        "user"      : "joshua1",
+        "password"  : "test",
         "port"      : 5432,
-        "database"  : "docker"
+        "database"  : "mvg"
         },
     "assistFiles":{
                     "stationFile":"LUTs/BahnhofsDaten.csv",
@@ -21,7 +21,8 @@
         "/":"",
         "-":"_",
         "Bf.":"Bf",
-        "(Oberbay)":"",	
+        "(Oberbay)":"",
+        "München_Hackerbrücke": "Hackerbrücke",
         "München_Flughafen_Terminal": "Flughafen_München",
         "München_Trudering":"Trudering",
         "Buchenau_":"Buchenau"

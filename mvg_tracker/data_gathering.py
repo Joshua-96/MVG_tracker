@@ -11,8 +11,7 @@ import sys
 import logging
 import os
 from dataclasses import dataclass, fields
-import sqlalchemy as sa
-from utils import init_console_logger, init_file_logger
+from utils import init_console_logger, init_file_logger, get_connector
 
 # from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -132,26 +131,32 @@ class Logger:
 
 class DataManager:
 
-    def __init__(self, config, depTableName, transTableName, loggingDir, backUpFolder):
+    def __init__(self,
+                 config,
+                 depTableName,
+                 transTableName,
+                 loggingDir=None,
+                 backUpFolder=None):
         self.dbParams = config["dbParams"]
         self.replaceMap = config["replaceMap"]
         self.assistFiles = config["assistFiles"]
         self.depTableName = depTableName
         self.transTableName = transTableName
-        self.backUpFolder = pl.Path(backUpFolder)
+        self.backUpFolder = pl.Path(backUpFolder) if backUpFolder is not None else None
         self.refreshInterval = 30
         self.saveInterval = 960
         self.backUpInterval = 39600
-        self.db_connector = None
         self.cwd = str(pl.Path(__file__).parent)
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
         self.logger = init_console_logger(self.logger, logging.DEBUG)
-        self.logger = init_file_logger(self.logger, loggingDir, logging.INFO)
+        if loggingDir is not None:
+            self.logger = init_file_logger(self.logger, loggingDir, logging.INFO)
         # self.logger = Logger(self.loggingDir, "csv")
         self.timeOffset = 2*60*3600
         self.load_trans_config()
         self.last_saved = datetime.today().date()
+        self.db_connector = get_connector(**config["dbParams"])
 
     def init_stationID(self):
         df = self.FileDict["stationFile"][["station", "ID"]]
@@ -256,11 +261,11 @@ class DataManager:
             loadPath = os.path.join(self.cwd, self.assistFiles[name])
             self.FileDict[name] = pd.read_csv(
                 loadPath,
-                sep=";",
+                sep=",",
                 index_col=None,
                 encoding="cp1252")
         self.init_stationID()
-        self.FileDict["stationFile"].drop(["Breitengrad", "Längengrad", "ID"],
+        self.FileDict["stationFile"].drop(["Breitengrad", "Laengengrad", "ID"],
                                           axis="columns",
                                           inplace=True)
 
@@ -283,7 +288,7 @@ class DataManager:
             df[timestampCol] = pd.to_datetime(df[timestampCol])
             df["date"] = df[timestampCol].apply(lambda x: x.date(), 0)
             for unique_date in df.date.unique():
-                dateStr = unique_date.strftime('%Y-%m-%d')
+                dateStr = unique_date.strftime('%Y/%m/%d')
                 FilePath = self.backUpFolder.joinpath(folder, dateStr).with_suffix(f".csv")
                 FilePath.parent.mkdir(parents=True, exist_ok=True)
                 df_date = df.loc[df["date"] == unique_date]
@@ -295,25 +300,7 @@ class DataManager:
                     df_date.drop_duplicates()
                 df_date.to_csv(str(FilePath), sep=",", index=False, mode="w")
 
-    def get_connector(self):
-        srv = "postgresql"
-        user = self.dbParams["user"]
-        pw = self.dbParams["password"]
-        host = self.dbParams["host"]
-        port = self.dbParams["port"]
-        db = self.dbParams["database"]
-        try:
-            alchemyEngine = sa.create_engine(
-                f'{srv}://{user}:{pw}@{host}:{port}/{db}',
-                pool_recycle=3600,)
-            alchemyEngine.connect()
-        except sa.exc.OperationalError:
-            self.logger.warning("fallback to localhost")
-            alchemyEngine = sa.create_engine(
-                f'{srv}://{user}:{pw}@localhost:{port}/{db}',
-                pool_recycle=3600,)
-            alchemyEngine.connect()
-        self.db_connector = alchemyEngine.connect()
+    
 
     def create_db_table(self, Df, tableName):
         if self.db_connector is None:
@@ -383,6 +370,7 @@ class DataManager:
                 currDf = self.get_Df(cachedDep, self.stationID)
                 self.cumDf = pd.concat([self.cumDf, currDf])
                 self.cumDf = self.cumDf.drop_duplicates("Id", keep="last")
+                self.cumDf.replace({"destination": self.replaceMap}, regex=True, inplace=True)
                 if epoch_now % self.backUpInterval < self.refreshInterval + 2:
                     self.save_df_datewise()
                     self.logger.info("executing planned db backup")

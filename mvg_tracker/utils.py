@@ -1,5 +1,6 @@
 import pathlib as pl
 import logging
+import sqlalchemy as sa
 
 LOG_FORMAT = '%(asctime)s - %(levelname)s - %(name)s : %(message)s'
 DATEFORMAT = '%Y/%m/%d %I:%M:%S %p'
@@ -24,3 +25,24 @@ def init_console_logger(logger, logLevel=logging.DEBUG):
     log_console_handler.setFormatter(formatter)
     logger.addHandler(log_console_handler)
     return logger
+
+
+def get_connector(**config):
+    srv = "postgresql"
+    user = config["user"]
+    pw = config["password"]
+    host = config["host"]
+    port = config["port"]
+    db = config["database"]
+    try:
+        alchemyEngine = sa.create_engine(
+            f'{srv}://{user}:{pw}@{host}:{port}/{db}',
+            pool_recycle=3600,)
+        alchemyEngine.connect()
+    except sa.exc.OperationalError:
+        self.logger.warning("fallback to localhost")
+        alchemyEngine = sa.create_engine(
+            f'{srv}://{user}:{pw}@localhost:{port}/{db}',
+            pool_recycle=3600,)
+        alchemyEngine.connect()
+    return alchemyEngine.connect()
