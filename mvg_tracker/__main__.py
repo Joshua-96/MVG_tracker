@@ -1,11 +1,10 @@
 import argparse
 import logging
 import os
-import sys
 import asyncio
 import pathlib as pl
-from data_gathering import DataManager, get_json_from_path
-from utils import init_console_logger, init_file_logger
+from data_gathering import DataManager
+from utils import init_console_logger, init_file_logger, get_json_from_path
 
 
 def main():
@@ -54,12 +53,13 @@ def main():
         logger.warning(
             f"No backup Dir given saving to and loading from {backUpFolder}")
     else:
-        backUpFolder=args.backUpPath
+        backUpFolder = args.backUpPath
 
     if args.logDir != ".":
         logDir = pl.Path(args.logDir) 
         if not logDir.exists():
-            raise FileNotFoundError("Dir doesn't exist, please enter valid Path")
+            raise FileNotFoundError(
+                "Dir doesn't exist, please enter valid Path")
     else:
         logger.warning("No logging dir given fallback to cwd")
         logDir = currPath
@@ -70,14 +70,15 @@ def main():
     else:
         configPath = pl.Path(args.configPath)
     logger = init_file_logger(logger, str(logDir))
-    logger.info(f"start tracking, writing logs to {logDir}, getting config from {configPath}")
+    logger.info(f"start tracking, writing logs to {logDir}," +
+                f"getting config from {configPath}")
     config = get_json_from_path(configPath)
     data_manager = DataManager(config,
                                "MVG1",
                                "MVG_Trans1",
                                logDir,
                                backUpFolder)
-    # logging.basicConfig(filename="tracebackss.log",encoding="utf-8")
+
     asyncio.run(data_manager.main(config=config))
 
 

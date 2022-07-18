@@ -1,22 +1,22 @@
+import itertools
 import signal
 import time
 from datetime import datetime
 from numpy import int64
 import pandas as pd
-import json
 import pathlib as pl
 import asyncio
 import aiohttp
 import sys
 import logging
 import os
+from utils import get_station_attributes
+from networking import cache_dep
 from dataclasses import dataclass, fields
 from utils import init_console_logger, init_file_logger, get_connector
 
 # from apscheduler.schedulers.background import BackgroundScheduler
 
-logger = logging.getLogger("RequestHandeler")
-logger = init_console_logger(logger)
 
 COL_ORDER = ["timestamp",
              "station",
@@ -26,6 +26,7 @@ COL_ORDER = ["timestamp",
              "Id",
              "curr_time_epoch",
              "timestamp_epoch"]
+
 
 @dataclass
 class departure:
@@ -38,96 +39,6 @@ class departure:
     curr_time_epoch: int64
     timestamp_epoch: int
 
-async def get_json(client, url):
-    async with client.get(url) as response:
-        if response.status != 200:
-            logger.info(f"got bad response from server{response.status}")
-            raise aiohttp.ServerConnectionError
-        # assert response.status == 200
-        return await response.read()
-
-
-async def get_dep(station, client):
-    content = await get_json(client, f"https://www.mvg.de/api//fahrinfo/departure/{station}?footway=0")
-    # content=requests.get(URL)
-    querey = json.loads(content.decode())
-    return querey
-
-
-async def cache_dep(stationID, client):
-    pending_tasks = [asyncio.ensure_future(
-        get_dep(i, client)) for i in list(stationID.values())]
-    cachedDep = await asyncio.gather(*pending_tasks)
-    return cachedDep
-
-
-    
-    # loop.stop()
-    # client.close()
-    # sys.exit(0)
-
-
-def show_psycopg2_exception(err):
-    # get details about the exception
-    err_type, err_obj, traceback = sys.exc_info()
-    # get the line number when exception occured
-    line_n = traceback.tb_lineno
-    # print the connect() error
-    print("\npsycopg2 ERROR:", err, "on line number:", line_n)
-    print("psycopg2 traceback:", traceback, "-- type:", err_type)
-    # psycopg2 extensions.Diagnostics object attribute
-    print("\nextensions.Diagnostics:", err.diag)
-    # print the pgcode and pgerror exceptions
-    print("pgerror:", err.pgerror)
-    print("pgcode:", err.pgcode, "\n")
-
-
-def merge_reduce_Df(inboundDf, outboundDf, suffixes, hour_axis):
-    merged = inboundDf.merge(outboundDf,
-                             how="inner",
-                             left_on=["date", "station", hour_axis],
-                             right_on=["date", "station", "hour"],
-                             suffixes=suffixes)
-    del outboundDf
-    merged = merged[merged[f"line{suffixes[0]}"]
-                    != merged[f"line{suffixes[1]}"]]
-    merged = merged[merged[f"timestamp{suffixes[0]}"]
-                    < merged[f"timestamp{suffixes[1]}"]]
-    merged["timestamp_epoch"] = merged[f"timestamp_epoch{suffixes[0]}"]
-    merged.drop(f"timestamp_epoch{suffixes[0]}", axis="columns", inplace=True)
-    if f"timestamp_epoch{suffixes[1]}" in list(merged.columns):
-        merged.drop(
-            f"timestamp_epoch{suffixes[1]}", axis="columns", inplace=True)
-    # merged.sort_values(by=[f"timestamp{suffixes[0]}",f"timestamp{suffixes[1]}"],inplace=True)
-    # merged.drop_duplicates([f"timestamp{suffixes[0]}","station",f"line{suffixes[0]}",f"line{suffixes[1]}"],keep="first",inplace=True)
-
-    return merged
-
-
-class Logger:
-    def __init__(self, path, FileType, LogLevel=0):
-        self.path = path
-        self.FileType = FileType
-        self.LogLevel = LogLevel
-
-    def error(self, ErrorType: str, station="", line=""):
-        dateStr = datetime.today().strftime('%Y-%m-%d')
-        FilePath = self.path.joinpath(dateStr).with_suffix(f".{self.FileType}")
-        timeOfDay = datetime.today().strftime('%H:%M:%S')
-        Entry = {"ErrorType": [ErrorType], "time": [
-            timeOfDay], "station": [station], "line": [line]}
-        df = pd.DataFrame(Entry)
-        if self.FileType == "csv":
-            if os.path.isfile(FilePath):
-                df.to_csv(FilePath, ";", index=False, mode="a", header=False)
-            else:
-                df.to_csv(FilePath, ";", index=False, mode="w")
-        else:
-            raise NotImplementedError("Only csv Files supported")
-
-    def write_file(self, e: Exception):
-        pass
-
 
 class DataManager:
 
@@ -137,12 +48,11 @@ class DataManager:
                  transTableName,
                  loggingDir=None,
                  backUpFolder=None):
-        self.dbParams = config["dbParams"]
-        self.replaceMap = config["replaceMap"]
-        self.assistFiles = config["assistFiles"]
+        self.config = config
         self.depTableName = depTableName
         self.transTableName = transTableName
-        self.backUpFolder = pl.Path(backUpFolder) if backUpFolder is not None else None
+        self.backUpFolder = pl.Path(backUpFolder) \
+            if backUpFolder is not None else None
         self.refreshInterval = 30
         self.saveInterval = 960
         self.backUpInterval = 39600
@@ -151,17 +61,19 @@ class DataManager:
         self.logger.setLevel(logging.DEBUG)
         self.logger = init_console_logger(self.logger, logging.DEBUG)
         if loggingDir is not None:
-            self.logger = init_file_logger(self.logger, loggingDir, logging.INFO)
-        # self.logger = Logger(self.loggingDir, "csv")
+            self.logger = init_file_logger(self.logger,
+                                           loggingDir,
+                                           logging.INFO)
+
         self.timeOffset = 2*60*3600
         self.load_trans_config()
         self.last_saved = datetime.today().date()
         self.db_connector = get_connector(**config["dbParams"])
 
     def init_stationID(self):
-        df = self.FileDict["stationFile"][["station", "ID"]]
-        stations = df.station.to_list()
-        keys = df.ID.to_list()
+        self.staion_attr = get_station_attributes(self.config).loc[:, ["station", "ID"]]
+        stations = self.staion_attr.station.to_list()
+        keys = self.staion_attr.ID.to_list()
         self.stationID = dict(zip(stations, keys))
 
     def get_Df(self, cachedDep: dict, stationID: dict):
@@ -172,13 +84,15 @@ class DataManager:
             for dep in querey["departures"]:
                 try:
                     if dep["product"] == "SBAHN"\
-                            and (int(dep["departureTime"]/1000) > int(time.time()) - 3600)\
+                            and (int(dep["departureTime"]/1000) >
+                                 int(time.time()) - 3600)\
                             and "delay" in dep.keys():
                         timestamp_epoch = int(
                             dep["departureTime"]/1000) + int(dep["delay"]*60)
                         cur_dep = departure(
                             timestamp=datetime.fromtimestamp(
-                                timestamp=timestamp_epoch).strftime("%Y/%m/%d, %H:%M:%S"),
+                                timestamp=timestamp_epoch).strftime(
+                                    "%Y/%m/%d, %H:%M:%S"),
                             station=station,
                             line=dep["label"],
                             destination=dep["destination"],
@@ -194,7 +108,8 @@ class DataManager:
 
                 except KeyError:
                     self.logger.warning(
-                        f'KeyError: {station} not found in with line {dep["label"]}')
+                        f'KeyError: {station} not found in with' +
+                        f'line {dep["label"]}')
                     # self.logger.error(
                     #     ErrorType="KeyError",
                     #     station=station, line=dep["label"])
@@ -203,20 +118,43 @@ class DataManager:
 
     def calculate_transfer(self, transDf):
 
-        transDf = transDf.replace({"destination": self.replaceMap}, regex=True)
+        def merge_reduce_Df(inboundDf, outboundDf, suffixes, hour_axis):
+            merged = inboundDf.merge(outboundDf,
+                                     how="inner",
+                                     left_on=["date", "station", hour_axis],
+                                     right_on=["date", "station", "hour"],
+                                     suffixes=suffixes)
+            del outboundDf
+            merged = merged[merged[f"line{suffixes[0]}"]
+                            != merged[f"line{suffixes[1]}"]]
+            merged = merged[merged[f"timestamp{suffixes[0]}"]
+                            < merged[f"timestamp{suffixes[1]}"]]
+            merged["timestamp_epoch"] = merged[f"timestamp_epoch{suffixes[0]}"]
+            merged.drop(f"timestamp_epoch{suffixes[0]}",
+                        axis="columns",
+                        inplace=True)
+            if f"timestamp_epoch{suffixes[1]}" in list(merged.columns):
+                merged.drop(
+                    f"timestamp_epoch{suffixes[1]}",
+                    axis="columns",
+                    inplace=True)
+
+            return merged
+
+        transDf = transDf.replace({"destination": self.config["replaceMap"]}, regex=True)
         relevantStations = self.FileDict["transFile"].Bahnhof.drop_duplicates(
         ).values.tolist()
         transDf = transDf[transDf["station"].isin(relevantStations)]
         transDf.drop(["Id", "curr_time_epoch"], axis="columns", inplace=True)
 
-        transDf = transDf.merge(self.FileDict["stationFile"],
+        transDf = transDf.merge(self.staion_attr,
                                 how="inner",
                                 on="station"
                                 )
 
         transDf = transDf.merge(self.FileDict["destFile"],
                                 how="inner",
-                                on=["destination", "Himmelsrichtung"])
+                                on="destination")
 
         transDf.drop("Himmelsrichtung", axis="columns", inplace=True)
         transDf.timestamp = pd.to_datetime(transDf.timestamp)
@@ -256,18 +194,19 @@ class DataManager:
         return combDf
 
     def load_trans_config(self):
-        self.FileDict = {i: None for i in self.assistFiles}
-        for name in self.assistFiles:
-            loadPath = os.path.join(self.cwd, self.assistFiles[name])
+        self.FileDict = {i: None for i in self.config["assistFiles"]}
+        for name in self.config["assistFiles"]:
+            loadPath = os.path.join(self.cwd, self.config["assistFiles"][name])
             self.FileDict[name] = pd.read_csv(
                 loadPath,
                 sep=",",
                 index_col=None,
                 encoding="cp1252")
         self.init_stationID()
-        self.FileDict["stationFile"].drop(["Breitengrad", "Laengengrad", "ID"],
-                                          axis="columns",
-                                          inplace=True)
+        # just station name and orientation is needed
+        # self.FileDict["stationFile"].drop(["Breitengrad", "Laengengrad", "ID"],
+        #                                   axis="columns",
+        #                                   inplace=True)
 
     def loadDf(self):
         if self.db_connector is None:
@@ -275,7 +214,8 @@ class DataManager:
         return pd.read_sql_table(self.depTableName, self.db_connector)
 
     def save_df_datewise(self):
-        for table, folder in [[self.transTableName, "trans"], [self.depTableName, "dep"]]:
+        for table, folder in [[self.transTableName, "trans"],
+                              [self.depTableName, "dep"]]:
             df = pd.read_sql(
                 f'SELECT * FROM public."{table}"',
                 self.db_connector)
@@ -289,38 +229,58 @@ class DataManager:
             df["date"] = df[timestampCol].apply(lambda x: x.date(), 0)
             for unique_date in df.date.unique():
                 dateStr = unique_date.strftime('%Y/%m/%d')
-                FilePath = self.backUpFolder.joinpath(folder, dateStr).with_suffix(f".csv")
+                FilePath = (self.backUpFolder
+                            .joinpath(folder, dateStr)
+                            .with_suffix('.csv'))
                 FilePath.parent.mkdir(parents=True, exist_ok=True)
                 df_date = df.loc[df["date"] == unique_date]
                 df_date.drop("date", axis=1, inplace=True)
                 if FilePath.exists():
                     incoming_df = pd.read_csv(FilePath, sep=",")
-                    df_date = pd.concat([df_date, incoming_df], ignore_index=True)
+                    df_date = pd.concat([df_date, incoming_df],
+                                        ignore_index=True)
                     del incoming_df
                     df_date.drop_duplicates()
                 df_date.to_csv(str(FilePath), sep=",", index=False, mode="w")
 
-    
-
     def create_db_table(self, Df, tableName):
         if self.db_connector is None:
             self.get_connector()
-        Df.to_sql(tableName, self.db_connector, if_exists="append", index=False)
+        Df.to_sql(tableName,
+                  self.db_connector,
+                  if_exists="append",
+                  index=False)
 
     def update_db_table(self):
         if self.db_connector is None:
             self.get_connector()
         time_thresh = time.time()-self.timeOffset
         baseDf = pd.read_sql(
-            f'SELECT * FROM public."{self.depTableName}" WHERE timestamp_epoch >= {time_thresh}',
+            f'SELECT * FROM public."{self.depTableName}"' +
+            f'WHERE timestamp_epoch >= {time_thresh}',
             self.db_connector)
         self.db_connector.execute(
-            f'DELETE FROM public."{self.depTableName}" WHERE timestamp_epoch >= {time_thresh}')
+            f'DELETE FROM public."{self.depTableName}" WHERE timestamp_epoch' +
+            f'>= {time_thresh}')
         baseDf = pd.concat([baseDf, self.cumDf], ignore_index=True)
         baseDf.drop_duplicates("Id", inplace=True, keep="last")
         transTable = self.calculate_transfer(baseDf)
+        transTable = transTable.loc[:, [
+            'delay_from',
+            'hour',
+            'next_hour_from',
+            'date',
+            'timestamp_to',
+            'line_to',
+            'destination_to',
+            'delay_to',
+            'next_hour_to',
+            'timestamp_epoch',
+            'hour_from',
+            'hour_to']]
         baseTransDf = pd.read_sql(
-            f'SELECT * FROM public."{self.transTableName}" WHERE timestamp_epoch >= {time_thresh}',
+            f'SELECT * FROM public."{self.transTableName}" WHERE ' +
+            f'timestamp_epoch >= {time_thresh}',
             self.db_connector)
         baseTransDf = pd.concat([baseTransDf, transTable], ignore_index=True)
         baseTransDf.drop_duplicates(
@@ -328,7 +288,8 @@ class DataManager:
             ignore_index=True,
             inplace=True)
         self.db_connector.execute(
-            f'DELETE FROM public."{self.transTableName}" WHERE timestamp_epoch >= {time_thresh}')
+            f'DELETE FROM public."{self.transTableName}" WHERE ' +
+            f'timestamp_epoch >= {time_thresh}')
         baseTransDf.to_sql(self.transTableName,
                            self.db_connector,
                            if_exists="append",
@@ -347,15 +308,25 @@ class DataManager:
     def clean_up_proc(self):
         self.update_db_table()
 
+    async def get_df_by_chunks(self):
+        for i in range(0, len(self.stationID), self.chunk_size):
+            chunk = dict(itertools.islice(self.stationID.items(), i, i + self.chunk_size))
+            cachedDep = await cache_dep(chunk, self.client)
+            currDf = self.get_Df(cachedDep, chunk)
+            if i == 0:
+                cumDf = currDf
+            else:
+                cumDf = pd.concat([cumDf, currDf])
+        return cumDf
+
     async def main(self, config):
         if config is None:
             raise ValueError("No Config given")
 
         loop = loop = asyncio.get_event_loop()
-        client = aiohttp.ClientSession(loop=loop)
-
-        cachedDep = await cache_dep(self.stationID, client)
-        self.cumDf = self.get_Df(cachedDep, self.stationID)
+        self.client = aiohttp.ClientSession(loop=loop)
+        self.chunk_size = 30
+        self.cumDf = await self.get_df_by_chunks()
         self.create_db_table(self.cumDf, self.depTableName)
         transDf = self.calculate_transfer(self.cumDf)
         self.create_db_table(transDf, self.transTableName)
@@ -364,13 +335,14 @@ class DataManager:
 
         while True:
             try:
-                #if self.last_saved != datetime.today().date():
                 epoch_now = int(datetime.timestamp(datetime.now()))
-                cachedDep = await cache_dep(self.stationID, client)
-                currDf = self.get_Df(cachedDep, self.stationID)
+                
+                currDf = await self.get_df_by_chunks()
                 self.cumDf = pd.concat([self.cumDf, currDf])
                 self.cumDf = self.cumDf.drop_duplicates("Id", keep="last")
-                self.cumDf.replace({"destination": self.replaceMap}, regex=True, inplace=True)
+                self.cumDf.replace({"destination": self.config["replaceMap"]},
+                                   regex=True,
+                                   inplace=True)
                 if epoch_now % self.backUpInterval < self.refreshInterval + 2:
                     self.save_df_datewise()
                     self.logger.info("executing planned db backup")
@@ -379,23 +351,28 @@ class DataManager:
                 epochTime_Df = int(
                     datetime.timestamp(
                         datetime.strptime(
-                            currDf.sort_values(
-                                "timestamp")[0:1].timestamp.values[0], "%Y/%m/%d, %H:%M:%S")
+                            currDf.timestamp[0].min(), "%Y/%m/%d, %H:%M:%S")
+                        )
                     )
-                )
 
-                self.logger.info(f"active connection with upcomming departure in {epochTime_Df - epoch_now + 30} seconds, next refresh in {self.refreshInterval} seconds")
+                self.logger.info(
+                    "active connection with upcomming departure in" +
+                    f"{epochTime_Df - epoch_now + 30} seconds, next " +
+                    f"refresh in {self.refreshInterval} seconds")
                 # sys.stdout.write(f"working {epochTime_Df - epoch_now} \r")
 
-                if epochTime_Df > (epoch_now + 60):                        
+                if epochTime_Df > (epoch_now + 60):
                     time2wait = (epochTime_Df - epoch_now) - 30
                     time.sleep(time2wait)
-                    self.logger.info(f"sleepmode, waiting for {time2wait} seconds")
-                
+                    self.logger.info(
+                        f"sleepmode, waiting for {time2wait} seconds")
+
                 time.sleep(self.refreshInterval)
 
                 if epoch_now % self.saveInterval < self.refreshInterval+2:
-                    self.logger.info(f"saving snapshot of Departures to database, saving again in {self.saveInterval // 60} minutes")
+                    self.logger.info(
+                        "saving snapshot of Departures to database, saving" +
+                        f"again in {self.saveInterval // 60} minutes")
                     self.update_db_table()
                     self.cumDf = self.cumDf[0:0]
                     time.sleep(30)
@@ -424,22 +401,3 @@ class DataManager:
                 self.logger.error("PayloadError")
                 time.sleep(30)
                 continue
-            # except:
-            #     print("other exception occured")
-            #     self.update_db_table(cumDf)
-            #     sys.exit(1)
-
-
-
-def get_json_from_path(Path:pl.Path):
-
-    assert Path.suffix == ".json", \
-        f"Incorrect Filetype given: {Path.suffix} expected json"
-
-    if Path.exists():
-        with open(Path, "r") as read_file:
-            params = json.load(read_file)
-    else:
-        raise FileNotFoundError(f"at path {Path}")
-
-    return params

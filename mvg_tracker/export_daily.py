@@ -1,12 +1,13 @@
 import os
 import pandas as pd
 import pathlib as pl
-import sys
 from datetime import date, datetime
 
 from psycopg2 import Timestamp
 from data_gathering import get_json_from_path
 from sqlalchemy import create_engine
+
+from utils import get_connector
 
 DEP_TABLE_NAME = "MVG1"
 TRANS_TABLE_NAME = "MVG_Trans1"
@@ -31,6 +32,7 @@ def save_df_datewise(df, folder):
         timestampCol = "timestamp_from"
     else:
         raise KeyError(f"no timestamp col found in {df.columns}")
+    
     df[timestampCol] = pd.to_datetime(df[timestampCol])
     df["date"] = df[timestampCol].apply(lambda x: x.date(), 0)
     for unique_date in df.date.unique():
@@ -42,32 +44,32 @@ def save_df_datewise(df, folder):
             incoming_df = pd.read_csv(FilePath, sep=",")
             df_date = pd.concat([df_date, incoming_df], ignore_index=True)
             del incoming_df
-            df_date.drop_duplicates(inplace=True)
+            df_date.drop_duplicates(subset=["Id"], inplace=True)
         df_date.to_csv(str(FilePath), sep=",", index=False)
 
-
-def get_df_from_db(config):
-    conn = create_engine(
-        f'postgresql://{config["dbParams"]["user"]}:' +
-        f'{config["dbParams"]["password"]}' +
-        f'@localhost:{config["dbParams"]["port"]}',
-        pool_recycle=3600)
-    conn.connect()
-    df = pd.read_sql(
-            f'SELECT * FROM public."{DEP_TABLE_NAME}"',
-            conn)
-    return df
 
 def main():
     currPath = pl.Path(__file__).parent
     jsonRelPath = "config/default_config.json"
     jsonPath = currPath.joinpath(jsonRelPath)
     config = get_json_from_path(jsonPath)
-    df = get_df_from_db(config)
-    df.reindex(COL_ORDER)
-    # df = pd.read_csv(BACKUP_FOLDER_HOST.parent.joinpath(DEP_TABLE_NAME).with_suffix(".csv"), sep=";")
-    save_df_datewise(df, DEP_FOLDER)
-
+    conn = get_connector(**config["dbParams"])
+    # for loc, tbl_name in zip([DEP_FOLDER, TRANS_FOLDER],[DEP_TABLE_NAME, TRANS_TABLE_NAME]):
+    #     df = pd.read_sql(
+    #             f'SELECT * FROM public."{tbl_name}"',
+    #             conn)
+    #     # df.reindex(COL_ORDER)
+    #     # df = pd.read_csv(BACKUP_FOLDER_HOST.parent.joinpath(DEP_TABLE_NAME).with_suffix(".csv"), sep=";")
+    #     save_df_datewise(df, loc)
+    df = pd.read_sql(
+                f'SELECT * FROM public."{DEP_TABLE_NAME}"',
+                conn)
+    
+    df.replace({"destination": config["replaceMap"]}, regex=True, inplace=True)
+    df.to_sql("MVG1",
+              conn,
+              if_exists="replace",
+              index=False)
 
 
 if __name__ == "__main__":
