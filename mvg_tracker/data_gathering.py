@@ -81,6 +81,8 @@ class DataManager:
             columns=[field.name for field in fields(departure)])
         for i, station in enumerate(stationID):
             querey = cachedDep[i]
+            if querey is None:
+                continue
             for dep in querey["departures"]:
                 try:
                     if dep["product"] == "SBAHN"\
@@ -356,7 +358,7 @@ class DataManager:
                     )
 
                 self.logger.info(
-                    "active connection with upcomming departure in" +
+                    "active connection with upcomming departure in " +
                     f"{epochTime_Df - epoch_now + 30} seconds, next " +
                     f"refresh in {self.refreshInterval} seconds")
                 # sys.stdout.write(f"working {epochTime_Df - epoch_now} \r")
@@ -409,3 +411,4 @@ class DataManager:
                 self.logger.error("PayloadError")
                 time.sleep(30)
                 continue
+

@@ -8,13 +8,15 @@ from utils import init_console_logger
 
 logger = logging.getLogger("RequestHandeler")
 logger = init_console_logger(logger)
+logger.setLevel(logging.DEBUG)
 
 
 async def get_json(client, url):
     async with client.get(url) as response:
         if response.status != 200:
-            logger.info(f"got bad response from server{response.status}")
-            raise aiohttp.ServerConnectionError
+            logger.debug(f"got bad response from server {response.status} at url {url}")
+            return
+            #raise aiohttp.ServerConnectionError(f"request failed at station url {url}")
         # assert response.status == 200
         return await response.read()
 
@@ -24,6 +26,8 @@ async def get_dep(station, client):
         client,
         f"https://www.mvg.de/api//fahrinfo/departure/{station}?footway=0")
     # content=requests.get(URL)
+    if content is None:
+        return
     querey = json.loads(content.decode())
     return querey
 
