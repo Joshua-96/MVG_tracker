@@ -397,6 +397,14 @@ class DataManager:
                 self.cumDf = self.cumDf[0:0]
                 time.sleep(120)
                 continue
+            
+            except asyncio.TimeoutError:
+                self.logger.error("TimeOutError")
+                self.update_db_table()
+                self.cumDf = self.cumDf[0:0]
+                time.sleep(360)
+                continue
+
             except IndexError:
                 self.logger.error("PayloadError")
                 time.sleep(30)
