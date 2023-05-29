@@ -54,7 +54,6 @@ class DataManager:
 
     def __init__(self,
                  config,
-                 depTableName,
                  loggingDir=None,
                  backUpFolder=None):
         self.config = config
@@ -145,7 +144,7 @@ class DataManager:
         backup_query = f"""
                 Copy {self.depTableName} to '{back_up_file_path}' CSV header
                 """
-        self.db_connector.execute(backup_query)
+        self.db_connector.execute(sa.text(backup_query))
 
     def create_db_table(self, Df, tableName):
         if self.db_connector is None:
@@ -169,7 +168,7 @@ class DataManager:
                 insert into {self.depTableName} ({comma_seperated_columns})
                 select {comma_seperated_columns}
                 from {temp_table_name}
-                on conflict ("departure_id")
+                on conflict (departure_id)
                 do nothing
         """
 
@@ -180,8 +179,8 @@ class DataManager:
                 FROM {temp_table_name} AS t
                 WHERE d.departure_id = t.departure_id
         """
-        self.db_connector.execute(insert_query)
-        self.db_connector.execute(update_query)
+        self.db_connector.execute(sa.text(insert_query))
+        self.db_connector.execute(sa.text(update_query))
 
     def signal_handler(self, signal, frame):
         self.update_db_table()

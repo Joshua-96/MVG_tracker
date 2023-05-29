@@ -75,9 +75,9 @@ def main():
     logger.info(f"start tracking, writing logs to {logDir}," +
                 f"getting config from {configPath}")
     config = get_json_from_path(configPath)
-    data_manager = DataManager(config,
-                               logDir,
-                               backUpFolder)
+    data_manager = DataManager(config=config,
+                               loggingDir=logDir,
+                               backUpFolder=backUpFolder)
 
     asyncio.run(data_manager.main(config=config))
 
