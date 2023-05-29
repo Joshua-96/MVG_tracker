@@ -3,8 +3,8 @@ import logging
 import os
 import asyncio
 import pathlib as pl
-from data_gathering import DataManager
-from utils import get_json_from_path
+from mvg_tracker.request_parsing.data_gathering import DataManager
+from mvg_tracker.data_validation.utils import get_json_from_path
 from mvg_tracker.logging_util.init_loggers import init_console_logger, init_file_logger
 
 
@@ -66,8 +66,9 @@ def main():
         logDir = currPath
     if args.configPath is None:
         logger.warning("No config dir given fallback to default config")
-        configRelPath = pl.Path("config/default_config.json")
+        configRelPath = pl.Path("../config/default_config.json")
         configPath = currPath.joinpath(configRelPath)
+        configPath.resolve()
     else:
         configPath = pl.Path(args.configPath)
     logger = init_file_logger(logger, str(logDir))

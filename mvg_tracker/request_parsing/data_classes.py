@@ -10,7 +10,7 @@ from .data_parsing import DataWrapper, Iterable_Baseclass
 from dataclasses import dataclass, field
 from mvg_tracker.data_validation.validator import Validator, TypeHandler, Function_Mapper
 from mvg_tracker.data_validation.validation_func import is_in, extract_digits_from_string
-from .enum_classes import Network, Product
+from mvg_tracker.request_parsing.enum_classes import Network, Product
 
 
 typeHandler = TypeHandler(dateformat="%Y/%m/%d, %H:%M:%S")

@@ -10,15 +10,15 @@ import aiohttp
 import sys
 import logging
 import os
+from dataclasses import dataclass, fields
 import sqlalchemy as sa
 import numpy as np
 from typing import Any
-from networking import cache_dep
-from request_parsing.data_classes import StationResponse
-from request_parsing.enum_classes import Product
-from dataclasses import dataclass, fields
-from utils import get_connector, datetime
-from logging_util.init_loggers import init_console_logger, init_file_logger
+from mvg_tracker.request_parsing.networking import cache_dep
+from mvg_tracker.request_parsing.data_classes import StationResponse
+from mvg_tracker.request_parsing.enum_classes import Product
+from mvg_tracker.data_validation.utils import get_connector, datetime
+from mvg_tracker.logging_util.init_loggers import init_console_logger, init_file_logger
 
 # from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -293,4 +293,3 @@ class DataManager:
                 self.logger.error("PayloadError")
                 inbuild_time.sleep(30)
                 continue
-

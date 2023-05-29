@@ -3,7 +3,7 @@ import logging
 import aiohttp
 import asyncio
 import sys
-from logging_util.init_loggers import init_console_logger
+from mvg_tracker.logging_util.init_loggers import init_console_logger
 
 
 logger = logging.getLogger("RequestHandeler")

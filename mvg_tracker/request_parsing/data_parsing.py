@@ -1,6 +1,6 @@
 import logging
 import pathlib as pl
-from logging_util.init_loggers import init_console_logger, init_file_logger
+from mvg_tracker.logging_util.init_loggers import init_console_logger, init_file_logger
 from abc import ABC, abstractmethod
 from typing import TypeAlias
 
