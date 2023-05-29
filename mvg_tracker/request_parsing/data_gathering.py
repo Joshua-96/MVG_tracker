@@ -140,7 +140,7 @@ class DataManager:
         return pd.read_sql_table(self.depTableName, self.db_connector)
 
     def backup_table(self):
-        back_up_file_path = self.backUpFolder.joinpath(f"{self.depTableName}")
+        back_up_file_path = self.backUpFolder.joinpath(f"{self.depTableName}.csv")
         backup_query = f"""
                 Copy {self.depTableName} to '{back_up_file_path}' CSV header
                 """
