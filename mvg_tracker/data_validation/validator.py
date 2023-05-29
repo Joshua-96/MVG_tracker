@@ -1,6 +1,6 @@
 import logging
 import pathlib as pl
-from logging_util.init_loggers import init_console_logger, init_file_logger
+from mvg_tracker.logging_util.init_loggers import init_console_logger, init_file_logger
 from datetime import datetime
 from copy import deepcopy
 from functools import partial
@@ -163,8 +163,13 @@ class Validator:
             value = value.__repr__()
 
         if issubclass(annotated_type, Enum):
-            value = annotated_type(value)
-            instance.__dict__[self.name] = value
+            try:
+                value = annotated_type(value)
+            except ValueError:
+                self.logger.info(f"found non matching value for enum {annotated_type} of value {value}")
+                value = None
+            finally:
+                instance.__dict__[self.name] = value
             return
 
         if hasattr(annotated_type, "__origin__"):

@@ -1,7 +1,4 @@
-import sys
 import pathlib as pl
-sys.path.append(str(pl.Path(__file__).parent.parent.parent))
-
 from datetime import datetime, timedelta
 import logging
 import numpy as np
@@ -17,6 +14,7 @@ from .enum_classes import Network, Product
 
 
 typeHandler = TypeHandler(dateformat="%Y/%m/%d, %H:%M:%S")
+
 
 @dataclass()
 class Departure(DataWrapper):
@@ -42,7 +40,7 @@ class Departure(DataWrapper):
     line_id: int = field(init=False)
     invaild: bool = field(init=False, default=False)
     departure_id: str = field(init=False)
-    
+
     def __post_init__(self):
         super().__post_init__()
         self.time_of_dep = self.departureTime
@@ -54,7 +52,7 @@ class Departure(DataWrapper):
         except ValueError:
             self.invaild = True
             # self.logger.warn(f"could parse label {self.label} to line id")
-    
+
     def get_time_to_dep(self) -> timedelta:
         cur_time = datetime.now()
         return self.departureTime - cur_time
@@ -74,13 +72,12 @@ class Departure(DataWrapper):
             self.destination_id = 0
             self.logger.warn(
                 f"Encountered non matching destination {self.destination}")
-    
+
     def get_df_repr(self, *args: str) -> pd.DataFrame:
         dict_repr: dict = {}
         for field_name in args:
             dict_repr[field_name] = [getattr(self, field_name)]
         return pd.DataFrame(dict_repr)
-
 
 
 @dataclass

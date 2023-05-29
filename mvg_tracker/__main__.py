@@ -5,7 +5,7 @@ import asyncio
 import pathlib as pl
 from data_gathering import DataManager
 from utils import get_json_from_path
-from logging_util.init_loggers import init_console_logger, init_file_logger
+from mvg_tracker.logging_util.init_loggers import init_console_logger, init_file_logger
 
 
 def main():

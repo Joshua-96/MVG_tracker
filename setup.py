@@ -29,7 +29,7 @@ def main():
 
     setup(
         name="mvg_tracker",
-        packages=find_packages(),
+        packages=find_packages(include=['mvg_tracker.*']),
         author="Joshua Ziegler",
         version=get_version(),
         description="script for getting departures and delays of\
