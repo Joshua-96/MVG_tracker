@@ -1,55 +1,17 @@
 {
     "dbParams": {
-        "host"      : "192.168.2.119",
+        "host"      : "192.168.2.120",
         "user"      : "joshua1",
         "password"  : "test",
         "port"      : 5432,
         "database"  : "mvg"
         },
-    "assistFiles":{
-                    "stationFile":"LUTs/selected_stations.csv",
-                    "stationDirection":"LUTs/stationDirection.csv",
-                    "destFile":"LUTs/Zielzuordnung.csv",
-                    "transFile":"LUTs/Umstiegsbahnhoefe.csv",
-                    "registered_stations": "LUTs/D_Bahnhof_2020_alle.csv"
-                },
-    "replaceMap":{
-        "ÃŸ":"ß",
-        "Ã¶":"ö",
-        "Ã¼":"ü",
-        ", ":"_",
-        " " :"_",
-        "(Obb)":"",
-        "/":"",
-        "-":"_",
-        "Bf.":"Bf",
-        "(Oberbay)":"",
-        "München_Hackerbrücke": "Hackerbrücke",
-        "München_Flughafen_Terminal": "Flughafen_München",
-        "München_Trudering":"Trudering",
-        "Buchenau_":"Buchenau"
-    },
-    "reverseReplaceMap":{
-        "-":"_",
-        " ": "_",
-        "München_": "",
-        "ä": "ae",
-        "ö": "oe",
-        "ü":"ue",
-        "Bahnhof": "Bf",
-        "ss": "ß",
-        "Donnersbergerbrücke": "Donnersberger",
-        "Ost": "Ostbahnhof"
-    },
-    "strip_list": [
-        "(Obb)",
-        "(Oberbay)",
-        "(b_Muenchen)",
-        "(b_Erding)",
-        "(b_Dachau)",
-        "(b_Freising)",
-        "(b_Deisenhofen)",
-        "(tief)",
-        "Muenchen_"
-    ]
+    "dbTables": {
+        "departures":"departures",
+        "temp_departure":"temp_departure",
+        "station":"station",
+        "station_order": "station_order",
+        "line":"line",
+        "transition":"transition"
+    }
 }

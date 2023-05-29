@@ -1,0 +1,167 @@
+2022/05/27 10:35:51 PM - WARNING - data_gathering : fallback to localhost
+2022/05/27 10:36:12 PM - WARNING - data_gathering : fallback to localhost
+2022/05/27 10:36:17 PM - ERROR - data_gathering : KeyboardInterrupt
+2022/05/27 10:40:25 PM - WARNING - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/05/27 10:41:34 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/05/27 10:42:32 PM - WARNING - data_gathering : fallback to localhost
+2022/05/27 10:42:54 PM - WARNING - data_gathering : fallback to localhost
+2022/05/27 10:48:00 PM - WARNING - data_gathering : fallback to localhost
+2022/05/27 10:48:21 PM - WARNING - data_gathering : fallback to localhost
+2022/05/27 10:48:53 PM - INFO - data_gathering : saving snapshot of Departures to database 
+2022/05/27 10:49:14 PM - WARNING - data_gathering : fallback to localhost
+2022/05/27 10:50:31 PM - ERROR - data_gathering : InternetConnectionError
+2022/05/27 10:50:52 PM - WARNING - data_gathering : fallback to localhost
+2022/05/27 11:04:50 PM - INFO - data_gathering : saving snapshot of Departures to database 
+2022/05/27 11:05:11 PM - WARNING - data_gathering : fallback to localhost
+2022/05/27 11:20:40 PM - INFO - data_gathering : saving snapshot of Departures to database 
+2022/05/27 11:21:01 PM - WARNING - data_gathering : fallback to localhost
+2022/05/27 11:22:43 PM - WARNING - data_gathering : fallback to localhost
+2022/05/27 11:23:20 PM - WARNING - data_gathering : fallback to localhost
+2022/05/31 02:57:10 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/05/31 02:59:53 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/05/31 03:00:16 PM - WARNING - data_gathering : fallback to localhost
+2022/05/31 03:01:55 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/05/31 03:02:18 PM - WARNING - data_gathering : fallback to localhost
+2022/05/31 03:02:20 PM - INFO - data_gathering : active connection with upcomming departure in 12 seconds, next refresh in 30 seconds
+2022/05/31 03:02:53 PM - INFO - data_gathering : active connection with upcomming departure in -20 seconds, next refresh in 30 seconds
+2022/05/31 03:05:29 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/05/31 03:05:54 PM - WARNING - data_gathering : fallback to localhost
+2022/05/31 03:05:56 PM - INFO - data_gathering : active connection with upcomming departure in -24 seconds, next refresh in 30 seconds
+2022/05/31 03:06:10 PM - INFO - data_gathering : Saving data to backup-dir and shutting down
+2022/05/31 03:26:38 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/05/31 03:27:01 PM - WARNING - data_gathering : fallback to localhost
+2022/05/31 03:27:03 PM - INFO - data_gathering : active connection with upcomming departure in 29 seconds, next refresh in 30 seconds
+2022/05/31 09:08:37 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/05/31 09:09:01 PM - WARNING - data_gathering : fallback to localhost
+2022/05/31 09:11:20 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/05/31 09:14:00 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/06/06 08:02:55 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/06/06 08:07:54 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/06/06 08:09:08 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/06/06 08:10:08 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/06/06 08:10:39 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/06/06 08:11:37 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/06/06 08:13:03 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/06/06 08:13:15 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/06/06 08:15:38 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/06/06 08:17:53 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/06/06 08:35:10 PM - INFO - data_gathering : active connection with upcomming departure in 24 seconds, next refresh in 30 seconds
+2022/06/06 08:35:42 PM - INFO - data_gathering : active connection with upcomming departure in 50 seconds, next refresh in 30 seconds
+2022/06/06 08:35:57 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker, getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/06/06 08:36:00 PM - INFO - data_gathering : active connection with upcomming departure in 30 seconds, next refresh in 30 seconds
+2022/06/06 08:37:38 PM - INFO - data_gathering : Saving data to backup-dir and shutting down
+2022/07/17 11:02:31 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:04:29 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:04:57 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:06:50 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:09:20 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:11:06 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:11:11 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:14:24 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:15:06 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:19:41 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:19:56 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:20:05 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:21:48 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:34:17 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:34:33 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:35:12 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:35:26 PM - INFO - data_gathering : active connection with upcomming departure in66 seconds, next refresh in 30 seconds
+2022/07/17 11:36:12 PM - INFO - data_gathering : active connection with upcomming departure in34 seconds, next refresh in 30 seconds
+2022/07/17 11:41:38 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:41:45 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:41:54 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:42:12 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:42:19 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:42:25 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:55:58 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:56:05 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:56:12 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:56:20 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:56:22 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:56:24 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:56:31 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:56:37 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:56:45 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:56:47 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:56:49 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:56:51 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:56:53 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:56:55 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:56:57 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:56:58 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:57:00 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:57:02 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:57:04 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:57:06 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:57:08 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:57:10 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:57:48 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:58:02 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:58:20 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:58:28 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:58:48 PM - INFO - data_gathering : Saving data to backup-dir and shutting down
+2022/07/17 11:58:52 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:59:01 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:59:09 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:59:16 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:59:29 PM - ERROR - data_gathering : ResponseError
+2022/07/17 11:59:48 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/17 11:59:57 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:00:04 AM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:01:02 AM - ERROR - data_gathering : ResponseError
+2022/07/18 12:05:35 AM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:05:43 AM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:06:32 AM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:06:39 AM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:07:21 AM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:07:43 AM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:08:02 AM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:12:01 AM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:12:21 AM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:12:55 AM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:17:02 AM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:17:28 AM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:18:30 AM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:20:07 AM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:37:37 AM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/07/18 12:37:59 AM - INFO - data_gathering : active connection with upcomming departure in-24 seconds, next refresh in 30 seconds
+2022/07/18 12:38:45 AM - INFO - data_gathering : active connection with upcomming departure in1 seconds, next refresh in 30 seconds
+2022/07/18 12:39:31 AM - INFO - data_gathering : active connection with upcomming departure in255 seconds, next refresh in 30 seconds
+2022/07/18 12:42:10 AM - INFO - data_gathering : Saving data to backup-dir and shutting down
+2022/11/09 02:09:35 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:10:37 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:12:27 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:14:56 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:15:21 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:19:14 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:20:24 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:20:56 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:23:02 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:24:15 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:24:37 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:25:08 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:25:58 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:27:00 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:27:56 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:28:14 PM - INFO - data_gathering : active connection with upcomming departure in82 seconds, next refresh in 30 seconds
+2022/11/09 02:28:54 PM - INFO - data_gathering : active connection with upcomming departure in46 seconds, next refresh in 30 seconds
+2022/11/09 02:29:36 PM - INFO - data_gathering : active connection with upcomming departure in6 seconds, next refresh in 30 seconds
+2022/11/09 02:30:02 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:30:20 PM - INFO - data_gathering : active connection with upcomming departure in18 seconds, next refresh in 30 seconds
+2022/11/09 02:31:43 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:32:00 PM - INFO - data_gathering : active connection with upcomming departure in35 seconds, next refresh in 30 seconds
+2022/11/09 02:32:40 PM - INFO - data_gathering : active connection with upcomming departure in0 seconds, next refresh in 30 seconds
+2022/11/09 02:33:11 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:33:28 PM - INFO - data_gathering : active connection with upcomming departure in8 seconds, next refresh in 30 seconds
+2022/11/09 02:34:09 PM - INFO - data_gathering : active connection with upcomming departure in32 seconds, next refresh in 30 seconds
+2022/11/09 02:34:23 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:34:41 PM - INFO - data_gathering : active connection with upcomming departure in-3 seconds, next refresh in 30 seconds
+2022/11/09 02:35:21 PM - INFO - data_gathering : active connection with upcomming departure in259 seconds, next refresh in 30 seconds
+2022/11/09 02:35:49 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:36:06 PM - INFO - data_gathering : active connection with upcomming departure in210 seconds, next refresh in 30 seconds
+2022/11/09 02:38:36 PM - INFO - data_gathering : sleepmode, waiting for 150 seconds
+2022/11/09 02:38:41 PM - INFO - __main__ : start tracking, writing logs to c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker,getting config from c:\Users\joshu\OneDrive\Dokumente\gitprojects\MVG_tracker\mvg_tracker\config\default_config.json
+2022/11/09 02:38:58 PM - INFO - data_gathering : active connection with upcomming departure in38 seconds, next refresh in 30 seconds
+2022/11/09 02:39:38 PM - INFO - data_gathering : active connection with upcomming departure in2 seconds, next refresh in 30 seconds
+2022/11/09 02:40:18 PM - INFO - data_gathering : active connection with upcomming departure in82 seconds, next refresh in 30 seconds

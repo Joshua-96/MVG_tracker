@@ -1,23 +1,26 @@
 import pathlib as pl
-import logging
 import sqlalchemy as sa
 import json
 import pandas as pd
-
-LOG_FORMAT = '%(asctime)s - %(levelname)s - %(name)s : %(message)s'
-DATEFORMAT = '%Y/%m/%d %I:%M:%S %p'
+import datetime as dt
 
 
+class datetime(dt.datetime):
+    def __divmod__(self, delta):
+        seconds = int((self - dt.datetime.min).total_seconds())
+        remainder = dt.timedelta(
+            seconds=seconds % delta.total_seconds(),
+            microseconds=self.microsecond,
+        )
+        quotient = self - remainder
+        return quotient, remainder
 
-def init_file_logger(logger, log_dir, logLevel=logging.DEBUG):
-    if isinstance(log_dir, str):
-        log_dir = pl.Path(log_dir)
-    log_file_handler = logging.FileHandler(log_dir.joinpath("log_file.txt"))
-    formatter = logging.Formatter(LOG_FORMAT, datefmt=DATEFORMAT)
-    log_file_handler.setFormatter(formatter)
-    log_file_handler.setLevel(logLevel)
-    logger.addHandler(log_file_handler)
-    return logger
+    def __floordiv__(self, delta):
+        return divmod(self, delta)[0]
+
+    def __mod__(self, delta):
+        return divmod(self, delta)[1]
+
 
 def get_station_attributes(config):
     cur_path = pl.Path(__file__)
@@ -45,21 +48,10 @@ def get_station_attributes(config):
                  "IFOPT": "ID"},
         inplace=True)
     return station_df.loc[station_df["DS100"].isin(station_subset),
-                          ["ID","station", "lon", "lat", "Direction"]]
+                          ["ID", "station", "lon", "lat", "Direction"]]
 
 
-def init_console_logger(logger, logLevel=logging.DEBUG):
-    formatter = logging.Formatter(
-        '%(asctime)s - %(levelname)s - %(name)s : %(message)s',
-        datefmt='%Y/%m/%d %I:%M:%S %p')
-    log_console_handler = logging.StreamHandler()
-    log_console_handler.setLevel(logging.DEBUG)
-    log_console_handler.setFormatter(formatter)
-    logger.addHandler(log_console_handler)
-    return logger
-
-
-def get_connector(**config):
+def get_connector(**config) -> sa.engine.Connection:
     srv = "postgresql"
     user = config["user"]
     pw = config["password"]
@@ -90,4 +82,3 @@ def get_json_from_path(Path: pl.Path):
         raise FileNotFoundError(f"at path {Path}")
 
     return params
-

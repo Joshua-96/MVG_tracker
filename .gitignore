@@ -9,4 +9,8 @@ mvg_tracker.egg-info/top_level.txt
 mvg_tracker/__pycache__/__main__.cpython-39.pyc
 mvg_tracker/traceback.log
 mvg_tracker/__pycache__/data_gathering.cpython-39.pyc
-mvg_tracker/data_gathering.py
+mvg_tracker/log_file.txt
+build/lib/*
+dashboard/__pycache__/*
+dashboard/pages/__pycache__/*
+mvg_tracker/__pycache__

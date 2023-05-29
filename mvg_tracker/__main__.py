@@ -4,7 +4,8 @@ import os
 import asyncio
 import pathlib as pl
 from data_gathering import DataManager
-from utils import init_console_logger, init_file_logger, get_json_from_path
+from utils import get_json_from_path
+from logging_util.init_loggers import init_console_logger, init_file_logger
 
 
 def main():
@@ -56,7 +57,7 @@ def main():
         backUpFolder = args.backUpPath
 
     if args.logDir != ".":
-        logDir = pl.Path(args.logDir) 
+        logDir = pl.Path(args.logDir)
         if not logDir.exists():
             raise FileNotFoundError(
                 "Dir doesn't exist, please enter valid Path")
@@ -74,8 +75,6 @@ def main():
                 f"getting config from {configPath}")
     config = get_json_from_path(configPath)
     data_manager = DataManager(config,
-                               "MVG1",
-                               "MVG_Trans1",
                                logDir,
                                backUpFolder)
 

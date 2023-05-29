@@ -18,6 +18,8 @@ services:
   data_grabber: 
     restart: always
     image: joshuaziegler/mvg_tracker:0.2.0
+    tty: true
+    stdin_open: true
     volumes:
       # - C:/Users/joshu/OneDrive/Desktop/logging:/mnt/external
       - ~/Desktop/logging:/mnt/external/logs

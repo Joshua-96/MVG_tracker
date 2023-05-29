@@ -3,7 +3,7 @@ import logging
 import aiohttp
 import asyncio
 import sys
-from utils import init_console_logger
+from logging_util.init_loggers import init_console_logger
 
 
 logger = logging.getLogger("RequestHandeler")
@@ -16,8 +16,6 @@ async def get_json(client, url):
         if response.status != 200:
             logger.debug(f"got bad response from server {response.status} at url {url}")
             return
-            #raise aiohttp.ServerConnectionError(f"request failed at station url {url}")
-        # assert response.status == 200
         return await response.read()
 
 
