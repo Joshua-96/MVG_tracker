@@ -1,4 +1,3 @@
-from importlib_metadata import entry_points
 from setuptools import setup, find_packages
 import re
 import pathlib as pl
