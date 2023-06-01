@@ -16,24 +16,37 @@ from mvg_tracker.request_parsing.enum_classes import Network, Product
 typeHandler = TypeHandler(dateformat="%Y/%m/%d, %H:%M:%S")
 
 
+def defaultValidatorFactory() -> Validator:
+    return Validator(typeHandler)
+
+
 @dataclass()
 class Departure(DataWrapper):
-    departureTime: datetime = Validator(typeHandler)
-    delay: int = Validator(typeHandler, allow_none=True, omit_logging=True)
+    plannedDepartureTime: datetime = defaultValidatorFactory()
+    realtimeDepartureTime: datetime = defaultValidatorFactory()
     time_of_record: datetime = datetime.now()
-    sev: bool = Validator(typeHandler)
-    destination: str = Validator(typeHandler)
-    product: Product = Validator(typeHandler)
-    label: str = Validator(typeHandler)
-    cancelled: bool = Validator(typeHandler)
-    lineBackgroundColor: str = Validator(typeHandler)
-    live: bool = Validator(typeHandler)
-    departureId: str = Validator(typeHandler)
+    sev: bool = defaultValidatorFactory()
+    destination: str = defaultValidatorFactory()
+    transportType: Product = defaultValidatorFactory()
+    label: str = defaultValidatorFactory()
+    trainType: str = defaultValidatorFactory()
+    network: Network = defaultValidatorFactory()
+    cancelled: bool = defaultValidatorFactory()
+    realtime: bool = defaultValidatorFactory()
+    delayInMinutes: int = Validator(typeHandler, allow_none=True, omit_logging=True)
     platform: int = Validator(typeHandler,
+                              allow_none=True,
+                              omit_logging=True,
                               cleaning_func=Function_Mapper(extract_digits_from_string, "value"))
-    stopPositionNumber: int = Validator(typeHandler)
-    infoMessages: list[str] = Validator(typeHandler)
+    messages: list[str] = defaultValidatorFactory()
+    bannerHash: str = defaultValidatorFactory()
+    occupancy: str = defaultValidatorFactory()
+    stopPointGlobalId: str = defaultValidatorFactory()
+    stopPositionNumber: int = Validator(typeHandler,
+                                        omit_logging=True,
+                                        allow_none=True)
     displayInfoMessage: str = field(default=None)
+    delay: int = field(init=False)
     station_id: int = field(init=False)
     destination_id: int = field(init=False)
     time_of_dep: datetime = field(init=False)
@@ -43,8 +56,8 @@ class Departure(DataWrapper):
 
     def __post_init__(self):
         super().__post_init__()
-        self.time_of_dep = self.departureTime
-        self.departure_id = self.departureId
+        self.time_of_dep = self.plannedDepartureTime
+        self.delay = self.delayInMinutes
         try:
             self.line_id = int(
                 self.label[1:] if not self.label[0].isnumeric() else self.label
@@ -55,11 +68,14 @@ class Departure(DataWrapper):
 
     def get_time_to_dep(self) -> timedelta:
         cur_time = datetime.now()
-        return self.departureTime - cur_time
+        return self.plannedDepartureTime - cur_time
 
     def set_station_id(self, station_id: str) -> None:
         self.station_id = int(station_id.replace(":", "")
                                         .replace("de", ""))
+    
+    def set_departure_id(self):
+        self.departure_id = f"{self.station_id}_{int(self.plannedDepartureTime.timestamp())}_{self.label}_{self.transportType.value}"
 
     def set_destinationId_by_name(self, all_stations_names: np.ndarray[Any, np.dtype[np.str_]],
                                   all_stations_ids: np.ndarray[Any, np.dtype[np.int32]]):
@@ -82,15 +98,14 @@ class Departure(DataWrapper):
 
 @dataclass
 class ServingLine(DataWrapper):
-    destination: str = Validator(typeHandler)
-    sev: bool = Validator(typeHandler)
-    network: Network = Validator(typeHandler)
-    product: Product = Validator(typeHandler)
-    lineNumber: str = Validator(typeHandler)
-    divaId: str = Validator(typeHandler)
+    destination: str = defaultValidatorFactory()
+    sev: bool = defaultValidatorFactory()
+    network: Network = defaultValidatorFactory()
+    product: Product = defaultValidatorFactory()
+    lineNumber: str = defaultValidatorFactory()
+    divaId: str = defaultValidatorFactory()
 
 
 @dataclass(slots=True)
 class StationResponse(DataWrapper):
-    servingLines: list[ServingLine]
     departures: list[Departure]

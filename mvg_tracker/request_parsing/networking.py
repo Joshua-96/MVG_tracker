@@ -22,7 +22,7 @@ async def get_json(client, url):
 async def get_dep(station, client):
     content = await get_json(
         client,
-        f"https://www.mvg.de/api//fahrinfo/departure/{station}?footway=0")
+        f"https://www.mvg.de/api/fib/v2/departure?globalId={station}")
     # content=requests.get(URL)
     if content is None:
         return

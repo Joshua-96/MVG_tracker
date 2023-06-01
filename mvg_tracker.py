@@ -66,7 +66,7 @@ def main():
         logDir = currPath
     if args.configPath is None:
         logger.warning("No config dir given fallback to default config")
-        configRelPath = pl.Path("../config/default_config.json")
+        configRelPath = pl.Path("mvg_tracker/config/default_config.json")
         configPath = currPath.joinpath(configRelPath)
         configPath.resolve()
     else:

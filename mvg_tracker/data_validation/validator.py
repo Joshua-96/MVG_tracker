@@ -154,9 +154,9 @@ class Validator:
 
             else:
                 value = self.default
+                return
         # apply function to clean the possible values
-        if self.cleaning_func is not None:
-            value = self.cleaning_func.invoke(value)
+        
         # cast to annotated values if applicable
         value_type = type(value)
         if isinstance(value, Validator):
@@ -181,6 +181,12 @@ class Validator:
             sub_value_type = type(value[0])
         else:
             sub_annotated_type = type(None)
+
+        if isinstance(value, annotated_type):
+            instance.__dict__[self.name] = value
+            return
+        if self.cleaning_func is not None:
+            value = self.cleaning_func.invoke(value)
 
         if not isinstance(value, annotated_type)\
                 and value is not None\

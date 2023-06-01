@@ -102,17 +102,17 @@ class DataManager:
             querey: dict = cachedDep[i]
             if querey is None:
                 continue
-            stationResponse = StationResponse(**querey)
+            stationResponse = StationResponse(querey)
             for dep in stationResponse.departures:
                 try:
-                    if dep.product != Product.SBahn\
+                    if dep.transportType != Product.SBahn\
                             or dep.get_time_to_dep() > TIME_DELTA_THRESH\
                             or dep.delay is None:
                         continue
                     dep.set_station_id(stationID[station])
+                    dep.set_departure_id()
                     dep.set_destinationId_by_name(
                         self.all_stations_names, self.all_stations_ids)
-
                     cur_depDf = dep.get_df_repr("time_of_dep",
                                                 "time_of_record",
                                                 "line_id",
@@ -254,7 +254,6 @@ class DataManager:
                     inbuild_time.sleep(30)
 
             except aiohttp.ServerConnectionError:
-                print("ResponseError")
                 self.logger.error("ResponseError")
                 self.update_db_table()
                 self.cumDf = self.cumDf[0:0]
